@@ -10,7 +10,6 @@ import {
   Modal,
   Alert,
 } from "react-native";
-import { MyModal } from "./app/components/modal";
 
 export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -21,7 +20,7 @@ export default function App() {
         <Image style={styles.logo} source={require("./app/assets/logo.png")} />
         <Text style={{ fontSize: 36 }}>Navy Dive Logs</Text>
       </View>
-      <View style={styles.welcomeButtons}>
+      <View style={styles.buttonsContainer}>
         <View style={styles.loginButton}>
           <Button
             title="Log In"
@@ -71,6 +70,11 @@ const styles = StyleSheet.create({
   buttonClose: {
     backgroundColor: "#2196F3",
   },
+  buttonsContainer: {
+    flex: 1,
+    position: "absolute",
+    bottom: 0,
+  },
   buttonOpen: {
     backgroundColor: "#F194FF",
   },
@@ -101,13 +105,14 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     position: "absolute",
-    top: "15vh",
+    top: "20%",
     alignItems: "center",
     fontSize: 30,
   },
   loginButton: {
-    height: "7vh",
-    width: "100vw",
+    flex: 1,
+    height: 100,
+    width: 600,
     backgroundColor: "blue",
     color: "white",
     alignItems: "center",
@@ -129,15 +134,11 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   registerButton: {
-    height: "7vh",
-    width: "100vw",
+    height: 100,
+    alignSelf: "stretch",
     backgroundColor: "purple",
     color: "white",
     alignItems: "center",
     justifyContent: "center",
-  },
-  welcomeButtons: {
-    position: "absolute",
-    bottom: 0,
   },
 });
