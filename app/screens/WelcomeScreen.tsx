@@ -16,6 +16,7 @@ export default function WelcomeScreen() {
 
   return (
     <View style={styles.container}>
+      <StatusBar />
       <View style={styles.logoContainer}>
         <Image style={styles.logo} source={require("../assets/logo.png")} />
         <Text style={{ fontSize: 36 }}>Navy Dive Logs</Text>
