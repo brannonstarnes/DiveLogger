@@ -6,6 +6,8 @@ import { Button } from "@rneui/themed";
 import { DataTable } from "react-native-paper";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
+import Clock from "../components/Clock";
+
 const logsIcon = <FontAwesome5 size={32} name={"clock"} />;
 const calcIcon = <FontAwesome5 size={32} name={"calculator"} />;
 const decoIcon = <FontAwesome5 size={32} name={"chart-line"} />;
@@ -17,7 +19,7 @@ export default function ClockScreen() {
       <View style={styles.screenContainer}>
         <StatusBar style="auto" />
         <View style={styles.clockContainer}>
-          <Text style={styles.clockNumbers}>00:28::53</Text>
+          <Clock />
         </View>
         <View style={styles.clockButtonsContainer}>
           <View style={styles.buttonGroup1}>
@@ -124,11 +126,9 @@ export default function ClockScreen() {
           </DataTable>
         </View>
         <View style={styles.BottomNavContainer}>
-          <View style={styles.BottomNav}>
-            <Text style={styles.navButtons}>
-              {logsIcon} | {calcIcon} | {decoIcon} | {aboutIcon}
-            </Text>
-          </View>
+          <Text style={styles.navButtons}>
+            {logsIcon} | {calcIcon} | {decoIcon} | {aboutIcon}
+          </Text>
         </View>
       </View>
     </SafeAreaView>
@@ -153,11 +153,13 @@ const styles = StyleSheet.create({
   },
   clockContainer: {
     display: "flex",
+    flexDirection: "row",
     width: 381,
     height: 103.47,
     backgroundColor: "#000000",
     top: 20,
     justifyContent: "center",
+    alignContent: "center",
   },
   clockButtonsContainer: {
     display: "flex",
@@ -170,6 +172,7 @@ const styles = StyleSheet.create({
     color: "#E0E0E0",
     textAlign: "center",
     fontSize: 48,
+    margin: 0,
   },
   logsContainer: {
     display: "flex",
