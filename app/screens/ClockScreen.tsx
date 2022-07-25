@@ -2,7 +2,7 @@ import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { Button } from "@rneui/themed";
-import { ButtonGroup } from "@rneui/base";
+import { DataTable } from "react-native-paper";
 
 export default function ClockScreen() {
   return (
@@ -71,7 +71,49 @@ export default function ClockScreen() {
             />
           </View>
         </View>
-        <View style={styles.logsContainer}></View>
+        <View style={styles.logsContainer}>
+          <DataTable>
+            <DataTable.Header>
+              <DataTable.Title>Event</DataTable.Title>
+              <DataTable.Title>Clock Time</DataTable.Title>
+              <DataTable.Title>Depth</DataTable.Title>
+              <DataTable.Title>Notes</DataTable.Title>
+            </DataTable.Header>
+            {
+              // Mapping of log data should render <DataTable.Row> <DataTable.Cell>{event}</DT.Cell> <DT.Cell>{clock time}</DT.Cell> <DT.Cell>{Notes}</DT.Cell> </DT.Row>
+            }
+            <DataTable.Row>
+              <DataTable.Cell>I/L LS</DataTable.Cell>
+              <DataTable.Cell>1042</DataTable.Cell>
+              <DataTable.Cell>200 fsw</DataTable.Cell>
+              <DataTable.Cell>Red|Green</DataTable.Cell>
+            </DataTable.Row>
+            <DataTable.Row>
+              <DataTable.Cell>I/L LS</DataTable.Cell>
+              <DataTable.Cell>1042</DataTable.Cell>
+              <DataTable.Cell>200 fsw</DataTable.Cell>
+              <DataTable.Cell>Red|Green</DataTable.Cell>
+            </DataTable.Row>
+            <DataTable.Row>
+              <DataTable.Cell>I/L LS</DataTable.Cell>
+              <DataTable.Cell>1042</DataTable.Cell>
+              <DataTable.Cell>200 fsw</DataTable.Cell>
+              <DataTable.Cell>Red|Green</DataTable.Cell>
+            </DataTable.Row>
+            <DataTable.Row>
+              <DataTable.Cell>I/L LS</DataTable.Cell>
+              <DataTable.Cell>1042</DataTable.Cell>
+              <DataTable.Cell>200 fsw</DataTable.Cell>
+              <DataTable.Cell>Red|Green</DataTable.Cell>
+            </DataTable.Row>
+            <DataTable.Row>
+              <DataTable.Cell>I/L LS</DataTable.Cell>
+              <DataTable.Cell>1042</DataTable.Cell>
+              <DataTable.Cell>200 fsw</DataTable.Cell>
+              <DataTable.Cell>Red|Green</DataTable.Cell>
+            </DataTable.Row>
+          </DataTable>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -105,7 +147,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 48,
   },
-  logsContainer: {},
+  logsContainer: {
+    display: "flex",
+    position: "absolute",
+    top: 360,
+    width: 381,
+    height: 300,
+  },
   screenContainer: {
     display: "flex",
     justifyContent: "center",
