@@ -1,32 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
+
 // import ClockButtons from "./ClockButtons";
 
 //Credit: https://w3collective.com/react-stopwatch/
-function Clock() {
-  const [time, setClockTime] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
-
+function Clock(props: any) {
   useEffect(() => {
-    let interval;
-    if (isRunning) {
+    let interval: any;
+    if (props.isRunning) {
       interval = setInterval(() => {
         //setInterval(func, milliseconds)
-        setClockTime((previousTime) => previousTime + 10); //setTimeout(func, milliseconds)
+        props.setClockTime((previousTime: number) => previousTime + 10); //setTimeout(func, milliseconds)
       }, 10);
-    } else if (!isRunning) {
+    } else if (!props.isRunning) {
       clearInterval(interval);
     }
     return () => clearInterval(interval);
-  }, [isRunning]);
+  }, [props.isRunning]);
 
   return (
     <Text style={styles.clockNumbers}>
-      {/*Hours*/}
-      {("0" + Math.floor((time / 600000) % 60)).slice(-2)}:{/*Minutes*/}
-      {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:{/*Seconds*/}
-      {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
-      {/* <Text className="clockTime" id="milliseconds">{("0" + Math.floor((time /10) % 100)).slice(-2)}</Text> */}
+      {("0" + Math.floor((props.time / (60 * 60 * 1000)) % 60)).slice(-2)}:
+      {("0" + Math.floor((props.time / (60 * 1000)) % 60)).slice(-2)}:
+      {("0" + Math.floor((props.time / 1000) % 60)).slice(-2)}
+      {/* {("0" + Math.floor((time / 10) % 100)).slice(-2)} */} {/*Milisec*/}
     </Text>
   );
 }

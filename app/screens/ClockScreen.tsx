@@ -1,12 +1,10 @@
 import { SafeAreaView, StyleSheet, Text, View, ScrollView } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 
 import { Button } from "@rneui/themed";
 import { DataTable } from "react-native-paper";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-
-import Clock from "../components/Clock";
 
 const logsIcon = <FontAwesome5 size={32} name={"clock"} />;
 const calcIcon = <FontAwesome5 size={32} name={"calculator"} />;
@@ -14,18 +12,41 @@ const decoIcon = <FontAwesome5 size={32} name={"chart-line"} />;
 const aboutIcon = <FontAwesome5 size={32} name={"info"} />;
 
 export default function ClockScreen() {
+  const [isRunning, setIsRunning] = useState(false);
+  const [time, setClockTime] = useState(0);
+
+  useEffect(() => {
+    let interval: any;
+    if (isRunning) {
+      interval = setInterval(() => {
+        //setInterval(func, milliseconds)
+        setClockTime((previousTime: number) => previousTime + 1); //setTimeout(func, milliseconds)
+      }, 1000);
+    } else if (!isRunning) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [isRunning]);
+
   return (
     <SafeAreaView>
       <View style={styles.screenContainer}>
         <StatusBar style="auto" />
         <View style={styles.clockContainer}>
-          <Clock />
+          <Text style={styles.clockNumbers}>
+            {("0" + Math.floor((time / (60 * 60)) % 60)).slice(-2)}:
+            {("0" + Math.floor((time / 60) % 60)).slice(-2)}:
+            {("0" + Math.floor(time % 60)).slice(-2)}
+          </Text>
         </View>
         <View style={styles.clockButtonsContainer}>
           <View style={styles.buttonGroup1}>
             <Button
               title="Left Surface"
-              onPress={() => alert("Left Surface!")}
+              onPress={() => {
+                console.log("Clock Running");
+                setIsRunning(true);
+              }}
               size="lg"
               type="outline"
             />
@@ -66,14 +87,17 @@ export default function ClockScreen() {
             />
             <Button
               title="Stop"
-              onPress={() => alert("End Dive?")}
+              onPress={() => {
+                setIsRunning(false);
+                console.log("Clock Stopped");
+              }}
               size="lg"
               type="solid"
               color="error"
             />
             <Button
               title="Reset"
-              onPress={() => alert("Reset Watch?")}
+              onPress={() => setClockTime(0)}
               size="lg"
               type="solid"
               color=""
@@ -150,6 +174,17 @@ const styles = StyleSheet.create({
     backgroundColor: "purple",
     width: 414,
     height: 50,
+  },
+  clockNumbers: {
+    position: "relative",
+    top: 20,
+    flexDirection: "row",
+    color: "#E0E0E0",
+    textAlign: "center",
+    fontSize: 48,
+    margin: 0,
+    width: 381,
+    height: 104,
   },
   clockContainer: {
     display: "flex",
