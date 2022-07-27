@@ -1,10 +1,18 @@
-import { SafeAreaView, StyleSheet, Text, View, ScrollView } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Alert,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 
 import { Button } from "@rneui/themed";
 import { DataTable } from "react-native-paper";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import { Input } from "@rneui/base";
 
 const logsIcon = <FontAwesome5 size={32} name={"clock"} />;
 const calcIcon = <FontAwesome5 size={32} name={"calculator"} />;
@@ -14,6 +22,8 @@ const aboutIcon = <FontAwesome5 size={32} name={"info"} />;
 export default function ClockScreen() {
   const [isRunning, setIsRunning] = useState(false);
   const [time, setClockTime] = useState(0);
+  const [diveLog, setDiveLog] = useState([]);
+  const [leftSurface, setLeftSurface] = useState();
 
   useEffect(() => {
     let interval: any;
@@ -27,6 +37,38 @@ export default function ClockScreen() {
     }
     return () => clearInterval(interval);
   }, [isRunning]);
+
+  //Sets types fror the Log Entry Object. '?' indicates optional properties
+  interface LogEntry {
+    abbrev: string;
+    eventTime: number;
+    depth?: any;
+    notes?: string;
+  }
+
+  //Creates a Row in the Logs Table, accepts an entry object
+  const mapEntries = diveLog.map((logEntry: LogEntry) => {
+    return (
+      <DataTable.Row key={logEntry.eventTime}>
+        <DataTable.Cell>{logEntry.abbrev}</DataTable.Cell>
+        <DataTable.Cell>{logEntry.eventTime}</DataTable.Cell>
+        <DataTable.Cell>{logEntry.depth}</DataTable.Cell>
+        <DataTable.Cell>{logEntry.notes}</DataTable.Cell>
+      </DataTable.Row>
+    );
+  });
+
+  //Update dive log without losing previous entries
+  const updateDiveLog = (entry: object) => {
+    let entries: any = [...diveLog, entry];
+    setDiveLog(entries || "");
+  };
+
+  // Get the Depth from user after Btn click BEFORE the log is updated
+  const promptDepth = async () => {
+    let d = await Alert.prompt("Please Enter Depth: ");
+    return d;
+  };
 
   return (
     <SafeAreaView>
@@ -44,15 +86,32 @@ export default function ClockScreen() {
             <Button
               title="Left Surface"
               onPress={() => {
-                console.log("Clock Running");
                 setIsRunning(true);
+                alert("Left Surface");
+                let newEntry: LogEntry = {
+                  abbrev: "LS",
+                  eventTime: 1201,
+                  depth: 0,
+                  notes: "",
+                };
+                updateDiveLog(newEntry);
               }}
               size="lg"
               type="outline"
             />
             <Button
               title="Reached Bottom"
-              onPress={() => alert("Reached Bottom!")}
+              onPress={() => {
+                var currDepth = promptDepth();
+                let newEntry: LogEntry = {
+                  //STILL NEED TO FIX THIS ASYNC FUNC
+                  abbrev: "RB",
+                  eventTime: 1202,
+                  depth: { currDepth },
+                  notes: "",
+                };
+                updateDiveLog(newEntry);
+              }}
               size="lg"
               type="outline"
             />
@@ -114,38 +173,8 @@ export default function ClockScreen() {
             </DataTable.Header>
             <ScrollView>
               {
-                // Mapping of log data should render <DataTable.Row> <DataTable.Cell>{event}</DT.Cell> <DT.Cell>{clock time}</DT.Cell> <DT.Cell>{Notes}</DT.Cell> </DT.Row>
+                mapEntries || "" // Mapping of log data should render <DataTable.Row> <DataTable.Cell>{event}</DT.Cell> <DT.Cell>{clock time}</DT.Cell> <DT.Cell>{Notes}</DT.Cell> </DT.Row>
               }
-              <DataTable.Row>
-                <DataTable.Cell>I/L LS</DataTable.Cell>
-                <DataTable.Cell>1042</DataTable.Cell>
-                <DataTable.Cell>200 fsw</DataTable.Cell>
-                <DataTable.Cell>Red|Green</DataTable.Cell>
-              </DataTable.Row>
-              <DataTable.Row>
-                <DataTable.Cell>I/L LS</DataTable.Cell>
-                <DataTable.Cell>1042</DataTable.Cell>
-                <DataTable.Cell>200 fsw</DataTable.Cell>
-                <DataTable.Cell>Red|Green</DataTable.Cell>
-              </DataTable.Row>
-              <DataTable.Row>
-                <DataTable.Cell>I/L LS</DataTable.Cell>
-                <DataTable.Cell>1042</DataTable.Cell>
-                <DataTable.Cell>200 fsw</DataTable.Cell>
-                <DataTable.Cell>Red|Green</DataTable.Cell>
-              </DataTable.Row>
-              <DataTable.Row>
-                <DataTable.Cell>I/L LS</DataTable.Cell>
-                <DataTable.Cell>1042</DataTable.Cell>
-                <DataTable.Cell>200 fsw</DataTable.Cell>
-                <DataTable.Cell>Red|Green</DataTable.Cell>
-              </DataTable.Row>
-              <DataTable.Row>
-                <DataTable.Cell>I/L LS</DataTable.Cell>
-                <DataTable.Cell>1042</DataTable.Cell>
-                <DataTable.Cell>200 fsw</DataTable.Cell>
-                <DataTable.Cell>Red|Green</DataTable.Cell>
-              </DataTable.Row>
             </ScrollView>
           </DataTable>
         </View>
@@ -202,12 +231,6 @@ const styles = StyleSheet.create({
     width: 381,
     height: 160,
     marginTop: 40,
-  },
-  clockNumbers: {
-    color: "#E0E0E0",
-    textAlign: "center",
-    fontSize: 48,
-    margin: 0,
   },
   logsContainer: {
     display: "flex",
