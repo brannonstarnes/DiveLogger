@@ -14,6 +14,7 @@ import { DataTable } from "react-native-paper";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import {
   addLeadingZerosToTimes,
+  millisToMinutesAndSeconds,
   roundUpTime,
 } from "../calculations/stringifyTime";
 import stringifyTime from "../calculations/stringifyTime";
@@ -163,14 +164,12 @@ export default function ClockScreen() {
                 setReachedSurface(RS);
                 const stringRS = stringifyTime(RS);
                 const ascentInMillisec = RS.getTime() - leftBottom.getTime(); //locally scoped var - state
-                const ascent = addLeadingZerosToTimes(
-                  Math.floor(ascentInMillisec / 1000)
-                ); //Round down ascent to closest second
+                const ascent = millisToMinutesAndSeconds(ascentInMillisec);
                 let newEntry: LogEntry = {
                   abbrev: "RS",
                   eventTime: stringRS,
                   depth: 0,
-                  notes: `::${ascent} ascent`,
+                  notes: `${ascent} ascent`,
                 };
                 updateDiveLog(newEntry);
               }}
