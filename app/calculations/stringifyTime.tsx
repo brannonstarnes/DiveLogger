@@ -1,4 +1,4 @@
-export default function stringifyTime(dateObj: object) {
+export default function stringifyTime(dateObj: Date) {
   let hours = addLeadingZerosToTimes(dateObj.getHours());
   let min = addLeadingZerosToTimes(dateObj.getMinutes());
   let sec = addLeadingZerosToTimes(dateObj.getSeconds());

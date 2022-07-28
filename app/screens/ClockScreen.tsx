@@ -12,7 +12,11 @@ import { StatusBar } from "expo-status-bar";
 import { Button } from "@rneui/themed";
 import { DataTable } from "react-native-paper";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { Input } from "@rneui/base";
+import {
+  addLeadingZerosToTimes,
+  roundUpTime,
+} from "../calculations/stringifyTime";
+import stringifyTime from "../calculations/stringifyTime";
 
 const logsIcon = <FontAwesome5 size={32} name={"clock"} />;
 const calcIcon = <FontAwesome5 size={32} name={"calculator"} />;
@@ -23,7 +27,9 @@ export default function ClockScreen() {
   const [isRunning, setIsRunning] = useState(false);
   const [time, setClockTime] = useState(0);
   const [diveLog, setDiveLog] = useState([]);
-  const [leftSurface, setLeftSurface] = useState();
+  const [leftSurface, setLeftSurface] = useState(new Date());
+  const [leftBottom, setLeftBottom] = useState(new Date());
+  const [reachedSurface, setReachedSurface] = useState(new Date());
 
   useEffect(() => {
     let interval: any;
@@ -41,12 +47,12 @@ export default function ClockScreen() {
   //Sets types fror the Log Entry Object. '?' indicates optional properties
   interface LogEntry {
     abbrev: string;
-    eventTime: number;
+    eventTime: string;
     depth?: any;
     notes?: string;
   }
 
-  //Creates a Row in the Logs Table, accepts an entry object
+  //JSX Element, Creates a Row in the Logs Table, accepts an entry object
   const mapEntries = diveLog.map((logEntry: LogEntry) => {
     return (
       <DataTable.Row key={logEntry.eventTime}>
@@ -58,16 +64,27 @@ export default function ClockScreen() {
     );
   });
 
-  //Update dive log without losing previous entries
-  const updateDiveLog = (entry: object) => {
+  //Update dive log without losing previous entries. When no entries divelog is empty string "".
+  const updateDiveLog = (entry: LogEntry) => {
     let entries: any = [...diveLog, entry];
     setDiveLog(entries || "");
   };
 
-  // Get the Depth from user after Btn click BEFORE the log is updated
-  const promptDepth = async () => {
-    let d = await Alert.prompt("Please Enter Depth: ");
-    return d;
+  //This fn takes params(depth:bool, notes:bool) to select which prompts are required for a logging event. If left false, empty string will be logged to the dive log table
+  const promptUserDepthOrNotes = (depth = false, notes = false) => {
+    let userDepth: any;
+    let userNotes: any;
+    depth ? (userDepth = Alert.prompt("Please Enter Depth")) : (userDepth = "");
+    notes
+      ? (userNotes = Alert.prompt("Add Notes For This Event: "))
+      : (userNotes = "");
+    return [userDepth, userNotes];
+  };
+
+  // Async function that awaits user input, accepts a function that asks for specific input (ie depth, notes)
+  const getUserInput = async (promptFunction: any) => {
+    const response = updateDiveLog(await promptFunction);
+    return response;
   };
 
   return (
@@ -87,10 +104,12 @@ export default function ClockScreen() {
               title="Left Surface"
               onPress={() => {
                 setIsRunning(true);
-                alert("Left Surface");
+                const LS = new Date();
+                setLeftSurface(LS); //Cant assign Date to leftSurface state?
+                const stringLS = stringifyTime(LS);
                 let newEntry: LogEntry = {
                   abbrev: "LS",
-                  eventTime: 1201,
+                  eventTime: stringLS,
                   depth: 0,
                   notes: "",
                 };
@@ -102,13 +121,17 @@ export default function ClockScreen() {
             <Button
               title="Reached Bottom"
               onPress={() => {
-                var currDepth = promptDepth();
+                // let currDepth = getUserInput(
+                //   promptUserDepthOrNotes(true, false)
+                // );
+                const RB = new Date();
+                const descent = RB.getTime() - leftSurface.getTime();
+                const stringRB = stringifyTime(RB);
                 let newEntry: LogEntry = {
-                  //STILL NEED TO FIX THIS ASYNC FUNC
                   abbrev: "RB",
-                  eventTime: 1202,
-                  depth: { currDepth },
-                  notes: "",
+                  eventTime: stringRB,
+                  depth: 35,
+                  notes: `:${roundUpTime(descent)} descent`,
                 };
                 updateDiveLog(newEntry);
               }}
@@ -117,13 +140,40 @@ export default function ClockScreen() {
             />
             <Button
               title="Left Bottom"
-              onPress={() => alert("Left Bottom!")}
+              onPress={() => {
+                const LB = new Date();
+                setLeftBottom(LB);
+                const stringLB = stringifyTime(LB);
+                const bottomTime = LB.getTime() - leftSurface.getTime();
+                let newEntry: LogEntry = {
+                  abbrev: "LB",
+                  eventTime: stringLB,
+                  depth: 30,
+                  notes: `:${roundUpTime(bottomTime)} BT`,
+                };
+                updateDiveLog(newEntry);
+              }}
               size="lg"
               type="outline"
             />
             <Button
               title="Reached Surface"
-              onPress={() => alert("Reached Surface!")}
+              onPress={() => {
+                const RS = new Date();
+                setReachedSurface(RS);
+                const stringRS = stringifyTime(RS);
+                const ascentInMillisec = RS.getTime() - leftBottom.getTime(); //locally scoped var - state
+                const ascent = addLeadingZerosToTimes(
+                  Math.floor(ascentInMillisec / 1000)
+                ); //Round down ascent to closest second
+                let newEntry: LogEntry = {
+                  abbrev: "RS",
+                  eventTime: stringRS,
+                  depth: 0,
+                  notes: `::${ascent} ascent`,
+                };
+                updateDiveLog(newEntry);
+              }}
               size="lg"
               type="outline"
             />
@@ -156,7 +206,10 @@ export default function ClockScreen() {
             />
             <Button
               title="Reset"
-              onPress={() => setClockTime(0)}
+              onPress={() => {
+                setClockTime(0);
+                setDiveLog([]);
+              }}
               size="lg"
               type="solid"
               color=""
@@ -173,7 +226,7 @@ export default function ClockScreen() {
             </DataTable.Header>
             <ScrollView>
               {
-                mapEntries || "" // Mapping of log data should render <DataTable.Row> <DataTable.Cell>{event}</DT.Cell> <DT.Cell>{clock time}</DT.Cell> <DT.Cell>{Notes}</DT.Cell> </DT.Row>
+                mapEntries || "" // Will create a row for each entry object in diveLog array
               }
             </ScrollView>
           </DataTable>
@@ -241,7 +294,7 @@ const styles = StyleSheet.create({
   },
   navButtons: {
     textAlign: "center",
-    fontSize: "25px",
+    fontSize: 25,
     color: "white",
   },
   screenContainer: {
