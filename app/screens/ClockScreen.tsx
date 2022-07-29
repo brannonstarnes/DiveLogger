@@ -195,6 +195,9 @@ export default function ClockScreen() {
               color={onO2 ? "success" : "grey"}
               title={onO2 ? "Off O2" : "On O2"}
               onPress={() => {
+                {
+                  /*====Go ON O2====*/
+                }
                 if (!onO2) {
                   setOnO2(true); //state change will change button label and color
                   const o2Start = new Date();
@@ -207,6 +210,9 @@ export default function ClockScreen() {
                     notes: "", //Need to account for any dead time in the future (time spent breathing air while shifting to 100% O2, usually < 1 minute)
                   };
                   updateDiveLog(newEntry);
+                }
+                {
+                  /*====Go OFF O2====*/
                 }
                 if (onO2) {
                   setOnO2(false); //change button color and label back to original
