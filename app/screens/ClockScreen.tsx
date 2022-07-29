@@ -35,6 +35,7 @@ export default function ClockScreen() {
   const [onO2, setOnO2] = useState(false);
   const [onO2StartTime, setOnO2StartTime] = useState<Date>(new Date());
   const [offO2Time, setOffO2Time] = useState<Date>(new Date());
+  const [onHold, setOnHold] = useState<Boolean>(false);
 
   useEffect(() => {
     let interval: any;
@@ -49,7 +50,7 @@ export default function ClockScreen() {
     return () => clearInterval(interval);
   }, [isRunning]);
 
-  //Sets types fror the Log Entry Object. '?' indicates optional properties
+  //Sets types for the Log Entry Object. '?' indicates optional properties
   interface LogEntry {
     abbrev: string;
     eventTime: string;
@@ -194,12 +195,13 @@ export default function ClockScreen() {
             <Button
               color={onO2 ? "success" : "grey"}
               title={onO2 ? "Off O2" : "On O2"}
+              type={onO2 ? "solid" : "clear"}
               onPress={() => {
                 {
                   /*====Go ON O2====*/
                 }
                 if (!onO2) {
-                  setOnO2(true); //state change will change button label and color
+                  setOnO2(true); //state change will change button appearance and title
                   const o2Start = new Date();
                   setOnO2StartTime(o2Start);
                   const stringO2Start = stringifyTime(o2Start);
@@ -220,7 +222,7 @@ export default function ClockScreen() {
                   setOffO2Time(o2End);
                   const stringOffO2 = stringifyTime(offO2Time);
                   const onO2Duration =
-                    o2End.getTime() - onO2StartTime.getTime(); //subtract the end time from start time to get o2 breathing time (duration)
+                    o2End.getTime() - onO2StartTime.getTime(); //subtracts the end time from start time to get o2 breathing time (duration)
                   const stringO2Duration =
                     millisToMinutesAndSeconds(onO2Duration);
                   let newEntry: LogEntry = {
@@ -234,34 +236,46 @@ export default function ClockScreen() {
               }}
             />
             {/* HOLD! Button */}
+            {/* A hold is a stoppage of ascent or descent, usually due to inner ear squeeze. Holds must be documented with depth, reason, and duration*/}
             <Button
-              title="HOLD!"
-              onPress={() => alert("HOLD!")}
-              size="lg"
-              type="solid"
               color="warning"
+              type={onHold ? "solid" : "clear"}
+              title="HOLD!"
+              size="lg"
+              onPress={() => {
+                setOnHold(true);
+                const hold = new Date();
+                const stringHold = stringifyTime(hold);
+                let newEntry: LogEntry = {
+                  abbrev: "Hold",
+                  eventTime: stringHold,
+                  depth: 0, //Need to get depth and notes from the user, (what depth and why there was a hold)
+                  notes: "",
+                };
+                updateDiveLog(newEntry);
+              }}
             />
             {/* STOP Button*/}
             <Button
               title="Stop"
+              size="lg"
+              type="solid"
+              color="error"
               onPress={() => {
                 setIsRunning(false);
                 console.log("Clock Stopped");
               }}
-              size="lg"
-              type="solid"
-              color="error"
             />
             {/*RESET Button*/}
             <Button
               title="Reset"
+              size="lg"
+              type="solid"
+              color="secondary"
               onPress={() => {
                 setClockTime(0);
                 setDiveLog([]);
               }}
-              size="lg"
-              type="solid"
-              color=""
             />
           </View>
         </View>
