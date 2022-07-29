@@ -7,11 +7,12 @@ import {
   Alert,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import { StatusBar } from "expo-status-bar";
 
+import { StatusBar } from "expo-status-bar";
 import { Button } from "@rneui/themed";
 import { DataTable } from "react-native-paper";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+
 import {
   addLeadingZerosToTimes,
   millisToMinutesAndSeconds,
@@ -30,7 +31,10 @@ export default function ClockScreen() {
   const [diveLog, setDiveLog] = useState([]);
   const [leftSurface, setLeftSurface] = useState(new Date());
   const [leftBottom, setLeftBottom] = useState(new Date());
-  const [reachedSurface, setReachedSurface] = useState(new Date());
+  const [reachedSurface, setReachedSurface] = useState(new Date()); //will be used to start :10 countdown for diver cleantime
+  const [onO2, setOnO2] = useState(false);
+  const [onO2StartTime, setOnO2StartTime] = useState<Date>(new Date());
+  const [offO2Time, setOffO2Time] = useState<Date>(new Date());
 
   useEffect(() => {
     let interval: any;
@@ -53,7 +57,7 @@ export default function ClockScreen() {
     notes?: string;
   }
 
-  //JSX Element, Creates a Row in the Logs Table, accepts an entry object
+  //JSX Element, Creates a Row in the Logs Table, accepts an entry object (see interface LogEntry)
   const mapEntries = diveLog.map((logEntry: LogEntry) => {
     return (
       <DataTable.Row key={logEntry.eventTime}>
@@ -99,8 +103,11 @@ export default function ClockScreen() {
             {("0" + Math.floor(time % 60)).slice(-2)}
           </Text>
         </View>
+
         <View style={styles.clockButtonsContainer}>
+          {/*==============First column of clock buttons=================*/}
           <View style={styles.buttonGroup1}>
+            {/*LEFT SURFACE Button*/}
             <Button
               title="Left Surface"
               onPress={() => {
@@ -119,6 +126,7 @@ export default function ClockScreen() {
               size="lg"
               type="outline"
             />
+            {/*REACHED BOTTOM Button*/}
             <Button
               title="Reached Bottom"
               onPress={() => {
@@ -139,6 +147,7 @@ export default function ClockScreen() {
               size="lg"
               type="outline"
             />
+            {/*LEFT BOTTOM Button*/}
             <Button
               title="Left Bottom"
               onPress={() => {
@@ -157,6 +166,7 @@ export default function ClockScreen() {
               size="lg"
               type="outline"
             />
+            {/*REACHED SURFACE Button*/}
             <Button
               title="Reached Surface"
               onPress={() => {
@@ -178,14 +188,46 @@ export default function ClockScreen() {
             />
           </View>
 
+          {/*==============Second column of clock buttons=================*/}
           <View style={styles.buttonGroup2}>
+            {/* O2 Button */}
             <Button
-              title="On O2"
-              onPress={() => alert("On O2!")}
-              size="lg"
-              type="solid"
-              color="success"
+              color={onO2 ? "success" : "grey"}
+              title={onO2 ? "Off O2" : "On O2"}
+              onPress={() => {
+                if (!onO2) {
+                  setOnO2(true); //state change will change button label and color
+                  const o2Start = new Date();
+                  setOnO2StartTime(o2Start);
+                  const stringO2Start = stringifyTime(o2Start);
+                  let newEntry: LogEntry = {
+                    abbrev: "On O2",
+                    eventTime: stringO2Start,
+                    depth: 0,
+                    notes: "", //Need to account for any dead time in the future (time spent breathing air while shifting to 100% O2, usually < 1 minute)
+                  };
+                  updateDiveLog(newEntry);
+                }
+                if (onO2) {
+                  setOnO2(false); //change button color and label back to original
+                  const o2End = new Date();
+                  setOffO2Time(o2End);
+                  const stringOffO2 = stringifyTime(offO2Time);
+                  const onO2Duration =
+                    o2End.getTime() - onO2StartTime.getTime(); //subtract the end time from start time to get o2 breathing time (duration)
+                  const stringO2Duration =
+                    millisToMinutesAndSeconds(onO2Duration);
+                  let newEntry: LogEntry = {
+                    abbrev: "Off O2",
+                    eventTime: stringOffO2,
+                    depth: 0,
+                    notes: `${stringO2Duration} O2 Time`,
+                  };
+                  updateDiveLog(newEntry);
+                }
+              }}
             />
+            {/* HOLD! Button */}
             <Button
               title="HOLD!"
               onPress={() => alert("HOLD!")}
@@ -193,6 +235,7 @@ export default function ClockScreen() {
               type="solid"
               color="warning"
             />
+            {/* STOP Button*/}
             <Button
               title="Stop"
               onPress={() => {
@@ -203,6 +246,7 @@ export default function ClockScreen() {
               type="solid"
               color="error"
             />
+            {/*RESET Button*/}
             <Button
               title="Reset"
               onPress={() => {
@@ -295,6 +339,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 25,
     color: "white",
+  },
+  o2ButtonActive: {
+    title: "Off O2",
+    size: "lg",
+    type: "solid",
+    color: "success",
+  },
+  o2ButtonInactive: {
+    title: "On O2",
+    size: "lg",
+    type: "solid",
+    color: "grey",
   },
   screenContainer: {
     display: "flex",
