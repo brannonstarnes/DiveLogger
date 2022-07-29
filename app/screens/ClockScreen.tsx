@@ -1,8 +1,15 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, ScrollView } from "react-native";
 import React from "react";
 import { StatusBar } from "expo-status-bar";
+
 import { Button } from "@rneui/themed";
-import { ButtonGroup } from "@rneui/base";
+import { DataTable } from "react-native-paper";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+
+const logsIcon = <FontAwesome5 size={32} name={"clock"} />;
+const calcIcon = <FontAwesome5 size={32} name={"calculator"} />;
+const decoIcon = <FontAwesome5 size={32} name={"chart-line"} />;
+const aboutIcon = <FontAwesome5 size={32} name={"info"} />;
 
 export default function ClockScreen() {
   return (
@@ -71,7 +78,58 @@ export default function ClockScreen() {
             />
           </View>
         </View>
-        <View style={styles.logsContainer}></View>
+        <View style={styles.logsContainer}>
+          <DataTable>
+            <DataTable.Header>
+              <DataTable.Title>Event</DataTable.Title>
+              <DataTable.Title>Clock Time</DataTable.Title>
+              <DataTable.Title>Depth</DataTable.Title>
+              <DataTable.Title>Notes</DataTable.Title>
+            </DataTable.Header>
+            <ScrollView>
+              {
+                // Mapping of log data should render <DataTable.Row> <DataTable.Cell>{event}</DT.Cell> <DT.Cell>{clock time}</DT.Cell> <DT.Cell>{Notes}</DT.Cell> </DT.Row>
+              }
+              <DataTable.Row>
+                <DataTable.Cell>I/L LS</DataTable.Cell>
+                <DataTable.Cell>1042</DataTable.Cell>
+                <DataTable.Cell>200 fsw</DataTable.Cell>
+                <DataTable.Cell>Red|Green</DataTable.Cell>
+              </DataTable.Row>
+              <DataTable.Row>
+                <DataTable.Cell>I/L LS</DataTable.Cell>
+                <DataTable.Cell>1042</DataTable.Cell>
+                <DataTable.Cell>200 fsw</DataTable.Cell>
+                <DataTable.Cell>Red|Green</DataTable.Cell>
+              </DataTable.Row>
+              <DataTable.Row>
+                <DataTable.Cell>I/L LS</DataTable.Cell>
+                <DataTable.Cell>1042</DataTable.Cell>
+                <DataTable.Cell>200 fsw</DataTable.Cell>
+                <DataTable.Cell>Red|Green</DataTable.Cell>
+              </DataTable.Row>
+              <DataTable.Row>
+                <DataTable.Cell>I/L LS</DataTable.Cell>
+                <DataTable.Cell>1042</DataTable.Cell>
+                <DataTable.Cell>200 fsw</DataTable.Cell>
+                <DataTable.Cell>Red|Green</DataTable.Cell>
+              </DataTable.Row>
+              <DataTable.Row>
+                <DataTable.Cell>I/L LS</DataTable.Cell>
+                <DataTable.Cell>1042</DataTable.Cell>
+                <DataTable.Cell>200 fsw</DataTable.Cell>
+                <DataTable.Cell>Red|Green</DataTable.Cell>
+              </DataTable.Row>
+            </ScrollView>
+          </DataTable>
+        </View>
+        <View style={styles.BottomNavContainer}>
+          <View style={styles.BottomNav}>
+            <Text style={styles.navButtons}>
+              {logsIcon} | {calcIcon} | {decoIcon} | {aboutIcon}
+            </Text>
+          </View>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -84,6 +142,14 @@ const styles = StyleSheet.create({
   buttonGroup2: {
     width: 170,
     marginLeft: 40,
+  },
+  BottomNavContainer: {
+    position: "absolute",
+    top: 666,
+    justifyContent: "center",
+    backgroundColor: "purple",
+    width: 414,
+    height: 50,
   },
   clockContainer: {
     display: "flex",
@@ -105,7 +171,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 48,
   },
-  logsContainer: {},
+  logsContainer: {
+    display: "flex",
+    position: "absolute",
+    top: 360,
+    width: 381,
+    height: 300,
+  },
+  navButtons: {
+    textAlign: "center",
+    fontSize: "25px",
+    color: "white",
+  },
   screenContainer: {
     display: "flex",
     justifyContent: "center",
