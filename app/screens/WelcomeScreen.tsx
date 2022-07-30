@@ -52,7 +52,7 @@ export default function WelcomeScreen({ navigation }: any) {
                 style={[styles.button, styles.buttonClose]} //change style name
                 onPress={() => {
                   setModalVisible(!modalVisible);
-                  navigation.navigate("Clock");
+                  navigation.navigate("Dive Logs");
                 }}
               >
                 <Text style={styles.textStyle}>Login</Text>

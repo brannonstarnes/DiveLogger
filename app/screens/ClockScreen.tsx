@@ -193,9 +193,9 @@ export default function ClockScreen() {
           <View style={styles.buttonGroup2}>
             {/* O2 Button */}
             <Button
-              color={onO2 ? "success" : "grey"}
+              color="success"
               title={onO2 ? "Off O2" : "On O2"}
-              type={onO2 ? "solid" : "clear"}
+              type={onO2 ? "solid" : "outline"}
               onPress={() => {
                 {
                   /*====Go ON O2====*/
@@ -239,7 +239,7 @@ export default function ClockScreen() {
             {/* A hold is a stoppage of ascent or descent, usually due to inner ear squeeze. Holds must be documented with depth, reason, and duration*/}
             <Button
               color="warning"
-              type={onHold ? "solid" : "clear"}
+              type={onHold ? "solid" : "outline"}
               title="HOLD!"
               size="lg"
               onPress={() => {

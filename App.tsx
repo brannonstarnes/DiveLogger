@@ -19,7 +19,7 @@ export default function App() {
             component={WelcomeScreen}
             options={{ title: "Login" }}
           />
-          <Stack.Screen name="Clock" component={ClockScreen} />
+          <Stack.Screen name="Dive Logs" component={ClockScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
