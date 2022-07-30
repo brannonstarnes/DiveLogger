@@ -36,6 +36,8 @@ export default function ClockScreen() {
   const [onO2StartTime, setOnO2StartTime] = useState<Date>(new Date());
   const [offO2Time, setOffO2Time] = useState<Date>(new Date());
   const [onHold, setOnHold] = useState<Boolean>(false);
+  const [holdStart, setHoldStart] = useState<Date>(new Date());
+  const [resumedDive, setResumedDive] = useState<Date>(new Date());
 
   useEffect(() => {
     let interval: any;
@@ -140,7 +142,7 @@ export default function ClockScreen() {
                 let newEntry: LogEntry = {
                   abbrev: "RB",
                   eventTime: stringRB,
-                  depth: 35,
+                  depth: 90,
                   notes: `:${roundUpTime(descent)} descent`,
                 };
                 updateDiveLog(newEntry);
@@ -159,7 +161,7 @@ export default function ClockScreen() {
                 let newEntry: LogEntry = {
                   abbrev: "LB",
                   eventTime: stringLB,
-                  depth: 30,
+                  depth: 90,
                   notes: `:${roundUpTime(bottomTime)} BT`,
                 };
                 updateDiveLog(newEntry);
@@ -240,19 +242,40 @@ export default function ClockScreen() {
             <Button
               color="warning"
               type={onHold ? "solid" : "outline"}
-              title="HOLD!"
+              title={onHold ? "Resume" : "HOLD!"}
               size="lg"
               onPress={() => {
-                setOnHold(true);
                 const hold = new Date();
                 const stringHold = stringifyTime(hold);
-                let newEntry: LogEntry = {
-                  abbrev: "Hold",
-                  eventTime: stringHold,
-                  depth: 0, //Need to get depth and notes from the user, (what depth and why there was a hold)
-                  notes: "",
-                };
-                updateDiveLog(newEntry);
+
+                if (!onHold) {
+                  setOnHold(true);
+                  setHoldStart(hold);
+                  let newEntry: LogEntry = {
+                    abbrev: "Hold",
+                    eventTime: stringHold,
+                    depth: 22, //Need to get depth and notes from the user, (what depth and why there was a hold)
+                    notes: "Left Ear",
+                  };
+                  updateDiveLog(newEntry);
+                }
+                if (onHold) {
+                  setOnHold(false); //change button color and label back to original
+                  const holdEnd = new Date();
+                  setResumedDive(holdEnd);
+                  const stringHoldEnd = stringifyTime(holdEnd);
+                  const onHoldDuration =
+                    holdEnd.getTime() - holdStart.getTime(); //subtracts the end time from start time to get o2 breathing time (duration)
+                  const stringHoldDuration =
+                    millisToMinutesAndSeconds(onHoldDuration);
+                  let newEntry: LogEntry = {
+                    abbrev: "Resumed",
+                    eventTime: stringHoldEnd,
+                    depth: 22,
+                    notes: `${stringHoldDuration} hold`,
+                  };
+                  updateDiveLog(newEntry);
+                }
               }}
             />
             {/* STOP Button*/}
@@ -287,7 +310,7 @@ export default function ClockScreen() {
               <DataTable.Title>Depth</DataTable.Title>
               <DataTable.Title>Notes</DataTable.Title>
             </DataTable.Header>
-            <ScrollView>
+            <ScrollView bounces={false} style={styles.scrollBox}>
               {
                 mapEntries || "" // Will create a row for each entry object in diveLog array
               }
@@ -314,7 +337,7 @@ const styles = StyleSheet.create({
   },
   BottomNavContainer: {
     position: "absolute",
-    top: 666,
+    top: 626,
     justifyContent: "center",
     backgroundColor: "purple",
     width: 414,
@@ -376,5 +399,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+  },
+  scrollBox: {
+    height: 215,
   },
 });

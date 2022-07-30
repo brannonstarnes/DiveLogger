@@ -19,7 +19,7 @@ export default function WelcomeScreen({ navigation }: any) {
       <StatusBar />
       <View style={styles.logoContainer}>
         <Image style={styles.logo} source={require("../assets/logo.png")} />
-        <Text style={{ fontSize: 36 }}>Navy Dive Logs</Text>
+        <Text style={{ fontSize: 36 }}>Navy Dive Logger</Text>
       </View>
       <View style={styles.buttonsContainer}>
         <View style={styles.loginButton}>
@@ -47,7 +47,7 @@ export default function WelcomeScreen({ navigation }: any) {
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>Login Here</Text>
+              <Text style={styles.modalText}>Auth0 Here</Text>
               <Pressable
                 style={[styles.button, styles.buttonClose]} //change style name
                 onPress={() => {
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     position: "absolute",
-    top: "20%",
+    top: "10%",
     alignItems: "center",
     fontSize: 30,
   },
