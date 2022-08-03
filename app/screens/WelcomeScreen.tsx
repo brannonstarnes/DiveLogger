@@ -11,7 +11,7 @@ import {
   Alert,
 } from "react-native";
 
-export default function WelcomeScreen() {
+export default function WelcomeScreen({ navigation }: any) {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
@@ -49,10 +49,13 @@ export default function WelcomeScreen() {
             <View style={styles.modalView}>
               <Text style={styles.modalText}>Login Here</Text>
               <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}
+                style={[styles.button, styles.buttonClose]} //change style name
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                  navigation.navigate("Dive Logs");
+                }}
               >
-                <Text style={styles.textStyle}>Close Modal</Text>
+                <Text style={styles.textStyle}>Login</Text>
               </Pressable>
             </View>
           </View>
