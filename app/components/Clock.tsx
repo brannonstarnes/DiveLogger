@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-// import ClockButtons from "./ClockButtons";
-
 //Credit: https://w3collective.com/react-stopwatch/
 function Clock(props: any) {
   useEffect(() => {
@@ -41,14 +39,5 @@ const styles = StyleSheet.create({
     height: 104,
   },
 });
-
-// Clock.propTypes = {
-//   time: PropTypes.number,
-//   makeDiveLogEntry: PropTypes.func,
-//   diveLog: PropTypes.array,
-//   setFormTSRGD: PropTypes.func,
-//   setOnO2: PropTypes.func,
-//   onO2: PropTypes.bool,
-// };
 
 export default Clock;

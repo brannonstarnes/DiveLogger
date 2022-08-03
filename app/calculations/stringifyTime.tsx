@@ -15,6 +15,7 @@ export function addLeadingZerosToTimes(timeIncrement: number | string) {
   return timeIncrement;
 }
 
+// Rounds up to the nearest whole minute
 export function roundUpTime(time: number) {
   let conversion = time / 60000;
   let newTime = Math.ceil(conversion);
