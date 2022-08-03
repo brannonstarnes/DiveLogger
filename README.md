@@ -1,5 +1,7 @@
 # Navy Dive Logger (Work in Progress)
 
+After reading below, watch the demo [here](https://www.youtube.com/embed/2NKSe-KH95U)! 
+
 ## About
 
 Simplifiying diving protocols, achieving fast and accurate calculations, and delivering clear, concise options to the diving supervisor when every second counts. Navy Dive Logger is developed by a First Class Navy Diver and uses the most current edition of the US Navy Diving Manual as the backbone for every line of code. My hope is that this application will contribute to safer dive planning, rapid and informed time-critical decision-making , and streamlined dive records reporting.
