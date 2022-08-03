@@ -222,7 +222,7 @@ export default function ClockScreen() {
                   setOnO2(false); //change button color and label back to original
                   const o2End = new Date();
                   setOffO2Time(o2End);
-                  const stringOffO2 = stringifyTime(offO2Time);
+                  const stringOffO2 = stringifyTime(o2End);
                   const onO2Duration =
                     o2End.getTime() - onO2StartTime.getTime(); //subtracts the end time from start time to get o2 breathing time (duration)
                   const stringO2Duration =
