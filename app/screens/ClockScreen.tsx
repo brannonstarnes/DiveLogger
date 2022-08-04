@@ -14,7 +14,6 @@ import { DataTable } from "react-native-paper";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 import {
-  addLeadingZerosToTimes,
   millisToMinutesAndSeconds,
   roundUpTime,
 } from "../calculations/stringifyTime";
@@ -28,6 +27,7 @@ const aboutIcon = <FontAwesome5 size={32} name={"info"} />;
 export default function ClockScreen() {
   const [isRunning, setIsRunning] = useState(false);
   const [time, setClockTime] = useState(0);
+  const [depth, setDepth] = useState<string>("");
   const [diveLog, setDiveLog] = useState([]);
   const [leftSurface, setLeftSurface] = useState(new Date());
   const [leftBottom, setLeftBottom] = useState(new Date());
@@ -56,7 +56,7 @@ export default function ClockScreen() {
   interface LogEntry {
     abbrev: string;
     eventTime: string;
-    depth?: any;
+    depth?: string; //can i make this number if I have to get userInput to obtain the depth?
     notes?: string;
   }
 
@@ -76,23 +76,6 @@ export default function ClockScreen() {
   const updateDiveLog = (entry: LogEntry) => {
     let entries: any = [...diveLog, entry];
     setDiveLog(entries || "");
-  };
-
-  //This fn takes params(depth:bool, notes:bool) to select which prompts are required for a logging event. If left false, empty string will be logged to the dive log table
-  const promptUserDepthOrNotes = (depth = false, notes = false) => {
-    let userDepth: any;
-    let userNotes: any;
-    depth ? (userDepth = Alert.prompt("Please Enter Depth")) : (userDepth = "");
-    notes
-      ? (userNotes = Alert.prompt("Add Notes For This Event: "))
-      : (userNotes = "");
-    return [userDepth, userNotes];
-  };
-
-  // Async function that awaits user input, accepts a function that asks for specific input (ie depth, notes)
-  const getUserInput = async (promptFunction: any) => {
-    const response = updateDiveLog(await promptFunction);
-    return response;
   };
 
   return (
@@ -121,7 +104,7 @@ export default function ClockScreen() {
                 let newEntry: LogEntry = {
                   abbrev: "LS",
                   eventTime: stringLS,
-                  depth: 0,
+                  depth: "0",
                   notes: "",
                 };
                 updateDiveLog(newEntry);
@@ -133,19 +116,24 @@ export default function ClockScreen() {
             <Button
               title="Reached Bottom"
               onPress={() => {
-                // let currDepth = getUserInput(
-                //   promptUserDepthOrNotes(true, false)
-                // );
                 const RB = new Date();
                 const descent = RB.getTime() - leftSurface.getTime();
                 const stringRB = stringifyTime(RB);
-                let newEntry: LogEntry = {
-                  abbrev: "RB",
-                  eventTime: stringRB,
-                  depth: 90,
-                  notes: `:${roundUpTime(descent)} descent`,
-                };
-                updateDiveLog(newEntry);
+                Alert.prompt("Reached Bottom", "Please Enter Depth:", [
+                  //This will prompt the user to enter depth before adding an entry to the log
+                  {
+                    text: "Submit",
+                    onPress: (inputDepth) => {
+                      let newEntry: LogEntry = {
+                        abbrev: "RB",
+                        eventTime: stringRB,
+                        depth: inputDepth,
+                        notes: `:${roundUpTime(descent)} descent`,
+                      };
+                      updateDiveLog(newEntry);
+                    },
+                  },
+                ]);
               }}
               size="lg"
               type="outline"
@@ -158,13 +146,20 @@ export default function ClockScreen() {
                 setLeftBottom(LB);
                 const stringLB = stringifyTime(LB);
                 const bottomTime = LB.getTime() - leftSurface.getTime();
-                let newEntry: LogEntry = {
-                  abbrev: "LB",
-                  eventTime: stringLB,
-                  depth: 90,
-                  notes: `:${roundUpTime(bottomTime)} BT`,
-                };
-                updateDiveLog(newEntry);
+                Alert.prompt("Max Depth", "Please Enter Max Depth:", [
+                  {
+                    text: "Submit",
+                    onPress: (inputMaxDepth) => {
+                      let newEntry: LogEntry = {
+                        abbrev: "LB",
+                        eventTime: stringLB,
+                        depth: inputMaxDepth,
+                        notes: `:${roundUpTime(bottomTime)} BT`,
+                      };
+                      updateDiveLog(newEntry);
+                    },
+                  },
+                ]);
               }}
               size="lg"
               type="outline"
@@ -181,7 +176,7 @@ export default function ClockScreen() {
                 let newEntry: LogEntry = {
                   abbrev: "RS",
                   eventTime: stringRS,
-                  depth: 0,
+                  depth: "0",
                   notes: `${ascent} ascent`,
                 };
                 updateDiveLog(newEntry);
@@ -207,13 +202,20 @@ export default function ClockScreen() {
                   const o2Start = new Date();
                   setOnO2StartTime(o2Start);
                   const stringO2Start = stringifyTime(o2Start);
-                  let newEntry: LogEntry = {
-                    abbrev: "On O2",
-                    eventTime: stringO2Start,
-                    depth: 0,
-                    notes: "", //Need to account for any dead time in the future (time spent breathing air while shifting to 100% O2, usually < 1 minute)
-                  };
-                  updateDiveLog(newEntry);
+                  Alert.prompt("On O2", "Please Enter Depth:", [
+                    {
+                      text: "Submit",
+                      onPress: (inputDepth) => {
+                        let newEntry: LogEntry = {
+                          abbrev: "On O2",
+                          eventTime: stringO2Start,
+                          depth: inputDepth,
+                          notes: "",
+                        };
+                        updateDiveLog(newEntry);
+                      },
+                    },
+                  ]);
                 }
                 {
                   /*====Go OFF O2====*/
@@ -222,18 +224,25 @@ export default function ClockScreen() {
                   setOnO2(false); //change button color and label back to original
                   const o2End = new Date();
                   setOffO2Time(o2End);
-                  const stringOffO2 = stringifyTime(offO2Time);
+                  const stringOffO2 = stringifyTime(o2End);
                   const onO2Duration =
                     o2End.getTime() - onO2StartTime.getTime(); //subtracts the end time from start time to get o2 breathing time (duration)
                   const stringO2Duration =
                     millisToMinutesAndSeconds(onO2Duration);
-                  let newEntry: LogEntry = {
-                    abbrev: "Off O2",
-                    eventTime: stringOffO2,
-                    depth: 0,
-                    notes: `${stringO2Duration} O2 Time`,
-                  };
-                  updateDiveLog(newEntry);
+                  Alert.prompt("Off O2", "Please Enter Depth:", [
+                    {
+                      text: "Submit",
+                      onPress: (inputDepth) => {
+                        let newEntry: LogEntry = {
+                          abbrev: "LB",
+                          eventTime: stringOffO2,
+                          depth: inputDepth,
+                          notes: `${stringO2Duration} O2 Time`,
+                        };
+                        updateDiveLog(newEntry);
+                      },
+                    },
+                  ]);
                 }
               }}
             />
@@ -248,18 +257,33 @@ export default function ClockScreen() {
                 const hold = new Date();
                 const stringHold = stringifyTime(hold);
 
-                if (!onHold) {
+                if (onHold == false) {
                   setOnHold(true);
                   setHoldStart(hold);
-                  let newEntry: LogEntry = {
-                    abbrev: "Hold",
-                    eventTime: stringHold,
-                    depth: 22, //Need to get depth and notes from the user, (what depth and why there was a hold)
-                    notes: "Left Ear",
-                  };
-                  updateDiveLog(newEntry);
+                  //REQUIRES 2 INPUTS, NESTED ALERT PROMPTS GET NEEDED INFO HERE
+                  Alert.prompt("HOLD!", "Please Enter Depth:", [
+                    {
+                      text: "Submit",
+                      onPress: (inputDepth) => {
+                        Alert.prompt("HOLD!", "Reason For Hold: ", [
+                          {
+                            text: "Submit",
+                            onPress: (inputReason) => {
+                              let newEntry: LogEntry = {
+                                abbrev: "Hold",
+                                eventTime: stringHold,
+                                depth: inputDepth, //Need to get depth and notes from the user, (what depth and why there was a hold)
+                                notes: inputReason,
+                              };
+                              updateDiveLog(newEntry);
+                            },
+                          },
+                        ]);
+                      },
+                    },
+                  ]);
                 }
-                if (onHold) {
+                if (onHold == true) {
                   setOnHold(false); //change button color and label back to original
                   const holdEnd = new Date();
                   setResumedDive(holdEnd);
@@ -268,13 +292,20 @@ export default function ClockScreen() {
                     holdEnd.getTime() - holdStart.getTime(); //subtracts the end time from start time to get o2 breathing time (duration)
                   const stringHoldDuration =
                     millisToMinutesAndSeconds(onHoldDuration);
-                  let newEntry: LogEntry = {
-                    abbrev: "Resumed",
-                    eventTime: stringHoldEnd,
-                    depth: 22,
-                    notes: `${stringHoldDuration} hold`,
-                  };
-                  updateDiveLog(newEntry);
+                  Alert.prompt("Resumed Dive", "Please Enter Depth:", [
+                    {
+                      text: "Submit",
+                      onPress: (inputDepth) => {
+                        let newEntry: LogEntry = {
+                          abbrev: "Resumed",
+                          eventTime: stringHoldEnd,
+                          depth: inputDepth,
+                          notes: `${stringHoldDuration} hold`,
+                        };
+                        updateDiveLog(newEntry);
+                      },
+                    },
+                  ]);
                 }
               }}
             />
@@ -370,6 +401,13 @@ const styles = StyleSheet.create({
     width: 381,
     height: 160,
     marginTop: 40,
+  },
+  depthInput: {
+    borderWidth: 1,
+    borderColor: "#777",
+    backgroundColor: "yellow",
+    height: 40,
+    width: 40,
   },
   logsContainer: {
     display: "flex",
