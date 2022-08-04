@@ -30,7 +30,10 @@ export default function ClockScreen() {
   const [depth, setDepth] = useState<string>("");
   const [diveLog, setDiveLog] = useState([]);
   const [leftSurface, setLeftSurface] = useState(new Date());
+  const [onDescent, setOnDescent] = useState(false);
+  const [onBottom, setOnBottom] = useState(false);
   const [leftBottom, setLeftBottom] = useState(new Date());
+  const [onAscent, setOnAscent] = useState(false);
   const [reachedSurface, setReachedSurface] = useState(new Date()); //will be used to start :10 countdown for diver cleantime
   const [onO2, setOnO2] = useState(false);
   const [onO2StartTime, setOnO2StartTime] = useState<Date>(new Date());
@@ -100,6 +103,7 @@ export default function ClockScreen() {
                 setIsRunning(true);
                 const LS = new Date();
                 setLeftSurface(LS); //Cant assign Date to leftSurface state?
+                setOnDescent(true);
                 const stringLS = stringifyTime(LS);
                 let newEntry: LogEntry = {
                   abbrev: "LS",
@@ -116,24 +120,34 @@ export default function ClockScreen() {
             <Button
               title="Reached Bottom"
               onPress={() => {
-                const RB = new Date();
-                const descent = RB.getTime() - leftSurface.getTime();
-                const stringRB = stringifyTime(RB);
-                Alert.prompt("Reached Bottom", "Please Enter Depth:", [
-                  //This will prompt the user to enter depth before adding an entry to the log
-                  {
-                    text: "Submit",
-                    onPress: (inputDepth) => {
-                      let newEntry: LogEntry = {
-                        abbrev: "RB",
-                        eventTime: stringRB,
-                        depth: inputDepth,
-                        notes: `:${roundUpTime(descent)} descent`,
-                      };
-                      updateDiveLog(newEntry);
+                if (onDescent == true) {
+                  const RB = new Date();
+                  const descent = RB.getTime() - leftSurface.getTime();
+                  const stringRB = stringifyTime(RB);
+                  setOnDescent(false);
+                  setOnBottom(true);
+                  Alert.prompt("Reached Bottom", "Please Enter Depth:", [
+                    //This will prompt the user to enter depth before adding an entry to the log
+                    {
+                      text: "Submit",
+                      onPress: (inputDepth) => {
+                        let newEntry: LogEntry = {
+                          abbrev: "RB",
+                          eventTime: stringRB,
+                          depth: inputDepth,
+                          notes: `:${roundUpTime(descent)} descent`,
+                        };
+                        updateDiveLog(newEntry);
+                      },
                     },
-                  },
-                ]);
+                  ]);
+                }
+                if (onDescent == false) {
+                  Alert.alert(
+                    "Error",
+                    "Divers must leave surface before reaching bottom."
+                  );
+                }
               }}
               size="lg"
               type="outline"
@@ -142,24 +156,34 @@ export default function ClockScreen() {
             <Button
               title="Left Bottom"
               onPress={() => {
-                const LB = new Date();
-                setLeftBottom(LB);
-                const stringLB = stringifyTime(LB);
-                const bottomTime = LB.getTime() - leftSurface.getTime();
-                Alert.prompt("Max Depth", "Please Enter Max Depth:", [
-                  {
-                    text: "Submit",
-                    onPress: (inputMaxDepth) => {
-                      let newEntry: LogEntry = {
-                        abbrev: "LB",
-                        eventTime: stringLB,
-                        depth: inputMaxDepth,
-                        notes: `:${roundUpTime(bottomTime)} BT`,
-                      };
-                      updateDiveLog(newEntry);
+                if (onBottom == true) {
+                  const LB = new Date();
+                  setLeftBottom(LB);
+                  setOnBottom(false);
+                  setOnAscent(true);
+                  const stringLB = stringifyTime(LB);
+                  const bottomTime = LB.getTime() - leftSurface.getTime();
+                  Alert.prompt("Max Depth", "Please Enter Max Depth:", [
+                    {
+                      text: "Submit",
+                      onPress: (inputMaxDepth) => {
+                        let newEntry: LogEntry = {
+                          abbrev: "LB",
+                          eventTime: stringLB,
+                          depth: inputMaxDepth,
+                          notes: `:${roundUpTime(bottomTime)} BT`,
+                        };
+                        updateDiveLog(newEntry);
+                      },
                     },
-                  },
-                ]);
+                  ]);
+                }
+                if (onBottom == false) {
+                  Alert.alert(
+                    "Error",
+                    "Divers must be on bottom or on Hold before Leave Bottom can be pressed."
+                  );
+                }
               }}
               size="lg"
               type="outline"
@@ -168,18 +192,26 @@ export default function ClockScreen() {
             <Button
               title="Reached Surface"
               onPress={() => {
-                const RS = new Date();
-                setReachedSurface(RS);
-                const stringRS = stringifyTime(RS);
-                const ascentInMillisec = RS.getTime() - leftBottom.getTime(); //locally scoped var - state
-                const ascent = millisToMinutesAndSeconds(ascentInMillisec);
-                let newEntry: LogEntry = {
-                  abbrev: "RS",
-                  eventTime: stringRS,
-                  depth: "0",
-                  notes: `${ascent} ascent`,
-                };
-                updateDiveLog(newEntry);
+                if (onAscent == true) {
+                  const RS = new Date();
+                  setReachedSurface(RS);
+                  const stringRS = stringifyTime(RS);
+                  const ascentInMillisec = RS.getTime() - leftBottom.getTime(); //locally scoped var - state
+                  const ascent = millisToMinutesAndSeconds(ascentInMillisec);
+                  let newEntry: LogEntry = {
+                    abbrev: "RS",
+                    eventTime: stringRS,
+                    depth: "0",
+                    notes: `${ascent} ascent`,
+                  };
+                  updateDiveLog(newEntry);
+                }
+                if (onAscent == false) {
+                  Alert.alert(
+                    "Error",
+                    "Divers must Leave Bottom before Reached Surface can be pressed."
+                  );
+                }
               }}
               size="lg"
               type="outline"
