@@ -1,5 +1,7 @@
 # Navy Dive Logger (Work in Progress)
 
+## Demo
+
 After reading below, watch the demo [here](https://youtu.be/Cg6KkvD50sw)! Be sure to open in a new tab.
 
 ## About
