@@ -81,9 +81,11 @@ export default function ClockScreen() {
   const mapEntries = diveLog.map((logEntry: LogEntry) => {
     return (
       <DataTable.Row key={logEntry.eventTime}>
-        <DataTable.Cell style={{ flex: 0.8 }}>{logEntry.abbrev}</DataTable.Cell>
-        <DataTable.Cell>{logEntry.eventTime}</DataTable.Cell>
-        <DataTable.Cell>{logEntry.depth}</DataTable.Cell>
+        <DataTable.Cell style={{ flex: 0.9 }}>{logEntry.abbrev}</DataTable.Cell>
+        <DataTable.Cell style={{ flex: 1 }}>
+          {logEntry.eventTime}
+        </DataTable.Cell>
+        <DataTable.Cell style={{ flex: 0.6 }}>{logEntry.depth}</DataTable.Cell>
         <DataTable.Cell style={{ flex: 2 }}>{logEntry.notes}</DataTable.Cell>
       </DataTable.Row>
     );
@@ -291,7 +293,7 @@ export default function ClockScreen() {
                       text: "Submit",
                       onPress: (inputDepth) => {
                         let newEntry: LogEntry = {
-                          abbrev: "LB",
+                          abbrev: "Off O2",
                           eventTime: stringOffO2,
                           depth: inputDepth,
                           notes: `${stringO2Duration} O2 Time`,
@@ -393,9 +395,9 @@ export default function ClockScreen() {
         <View style={styles.logsContainer}>
           <DataTable>
             <DataTable.Header>
-              <DataTable.Title style={{ flex: 0.8 }}>Event</DataTable.Title>
-              <DataTable.Title>Clock Time</DataTable.Title>
-              <DataTable.Title>Depth</DataTable.Title>
+              <DataTable.Title style={{ flex: 0.9 }}>Event</DataTable.Title>
+              <DataTable.Title style={{ flex: 1 }}>Clock Time</DataTable.Title>
+              <DataTable.Title style={{ flex: 0.7 }}>Depth</DataTable.Title>
               <DataTable.Title style={{ flex: 2 }}>Notes</DataTable.Title>
             </DataTable.Header>
             <ScrollView bounces={false} style={styles.scrollBox}>
