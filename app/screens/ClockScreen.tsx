@@ -6,7 +6,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, SetStateAction } from "react";
 
 import { StatusBar } from "expo-status-bar";
 import { Button } from "@rneui/themed";
@@ -14,10 +14,19 @@ import { DataTable } from "react-native-paper";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 import {
+  addLeadingZerosToTimes,
   millisToMinutesAndSeconds,
   roundUpTime,
 } from "../calculations/stringifyTime";
 import stringifyTime from "../calculations/stringifyTime";
+import {
+  getUsableDepth,
+  getChart,
+  getSchedule,
+  getRGD,
+  stringToNumber,
+} from "../calculations/tableSchedRGD";
+import chartMap from "../calculations/charts";
 
 const logsIcon = <FontAwesome5 size={32} name={"clock"} />;
 const calcIcon = <FontAwesome5 size={32} name={"calculator"} />;
@@ -27,7 +36,7 @@ const aboutIcon = <FontAwesome5 size={32} name={"info"} />;
 export default function ClockScreen() {
   const [isRunning, setIsRunning] = useState(false);
   const [time, setClockTime] = useState(0);
-  const [depth, setDepth] = useState<string>("");
+  const [depth, setDepth] = useState<string | undefined>();
   const [diveLog, setDiveLog] = useState([]);
   const [leftSurface, setLeftSurface] = useState(new Date());
   const [onDescent, setOnDescent] = useState(false);
@@ -59,8 +68,8 @@ export default function ClockScreen() {
   interface LogEntry {
     abbrev: string;
     eventTime: string;
-    depth?: string; //can i make this number if I have to get userInput to obtain the depth?
-    notes?: string;
+    depth?: SetStateAction<string | undefined>; //can i make this number if I have to get userInput to obtain the depth?
+    notes?: string | number | undefined;
   }
 
   //JSX Element, Creates a Row in the Logs Table, accepts an entry object (see interface LogEntry)
@@ -163,17 +172,32 @@ export default function ClockScreen() {
                   setOnAscent(true);
                   const stringLB = stringifyTime(LB);
                   const bottomTime = LB.getTime() - leftSurface.getTime();
+                  const roundedBT = roundUpTime(bottomTime);
                   Alert.prompt("Max Depth", "Please Enter Max Depth:", [
                     {
                       text: "Submit",
                       onPress: (inputMaxDepth) => {
+                        setDepth(inputMaxDepth);
+                        let newDepth = getUsableDepth(
+                          stringToNumber(inputMaxDepth)
+                        ); //convert the user input from string to number then find the nearest appropriate table depth from dive charts
+                        let table = getChart(newDepth);
+                        let calculatedSchedule = getSchedule(roundedBT, table); //determines which schedule to use in the table
+                        const TSRGD = getRGD(table, calculatedSchedule);
                         let newEntry: LogEntry = {
                           abbrev: "LB",
                           eventTime: stringLB,
                           depth: inputMaxDepth,
-                          notes: `:${roundUpTime(bottomTime)} BT`,
+                          notes: `:${roundedBT} BT`,
                         };
                         updateDiveLog(newEntry);
+                        let tableSchedule: LogEntry = {
+                          abbrev: "T/S",
+                          eventTime: `${newDepth}/${calculatedSchedule}`,
+                          depth: `${TSRGD}`,
+                          notes: "",
+                        };
+                        updateDiveLog(tableSchedule);
                       },
                     },
                   ]);
