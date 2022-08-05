@@ -37,6 +37,11 @@ export default function ClockScreen() {
   const [isRunning, setIsRunning] = useState(false);
   const [time, setClockTime] = useState(0);
   const [depth, setDepth] = useState<string | undefined>();
+  const [diveTable, setDiveTable] = useState<number | undefined>();
+  const [diveSchedule, setDiveSchedule] = useState<
+    number | string | undefined
+  >();
+  const [RGD, setRGD] = useState<string | undefined>();
   const [diveLog, setDiveLog] = useState([]);
   const [leftSurface, setLeftSurface] = useState(new Date());
   const [onDescent, setOnDescent] = useState(false);
@@ -76,10 +81,10 @@ export default function ClockScreen() {
   const mapEntries = diveLog.map((logEntry: LogEntry) => {
     return (
       <DataTable.Row key={logEntry.eventTime}>
-        <DataTable.Cell>{logEntry.abbrev}</DataTable.Cell>
+        <DataTable.Cell style={{ flex: 0.8 }}>{logEntry.abbrev}</DataTable.Cell>
         <DataTable.Cell>{logEntry.eventTime}</DataTable.Cell>
         <DataTable.Cell>{logEntry.depth}</DataTable.Cell>
-        <DataTable.Cell>{logEntry.notes}</DataTable.Cell>
+        <DataTable.Cell style={{ flex: 2 }}>{logEntry.notes}</DataTable.Cell>
       </DataTable.Row>
     );
   });
@@ -183,21 +188,17 @@ export default function ClockScreen() {
                         ); //convert the user input from string to number then find the nearest appropriate table depth from dive charts
                         let table = getChart(newDepth);
                         let calculatedSchedule = getSchedule(roundedBT, table); //determines which schedule to use in the table
-                        const TSRGD = getRGD(table, calculatedSchedule);
+                        const repetGroupDesig = getRGD(
+                          table,
+                          calculatedSchedule
+                        ); //Repet Group Designator is a letter that indicates the amount of nitrogen saturation a diver has
                         let newEntry: LogEntry = {
                           abbrev: "LB",
                           eventTime: stringLB,
                           depth: inputMaxDepth,
-                          notes: `:${roundedBT} BT`,
+                          notes: `:${roundedBT} BT, T/S: ${newDepth}/${calculatedSchedule} ${repetGroupDesig}`,
                         };
                         updateDiveLog(newEntry);
-                        let tableSchedule: LogEntry = {
-                          abbrev: "T/S",
-                          eventTime: `${newDepth}/${calculatedSchedule}`,
-                          depth: `${TSRGD}`,
-                          notes: "",
-                        };
-                        updateDiveLog(tableSchedule);
                       },
                     },
                   ]);
@@ -392,10 +393,10 @@ export default function ClockScreen() {
         <View style={styles.logsContainer}>
           <DataTable>
             <DataTable.Header>
-              <DataTable.Title>Event</DataTable.Title>
+              <DataTable.Title style={{ flex: 0.8 }}>Event</DataTable.Title>
               <DataTable.Title>Clock Time</DataTable.Title>
               <DataTable.Title>Depth</DataTable.Title>
-              <DataTable.Title>Notes</DataTable.Title>
+              <DataTable.Title style={{ flex: 2 }}>Notes</DataTable.Title>
             </DataTable.Header>
             <ScrollView bounces={false} style={styles.scrollBox}>
               {
