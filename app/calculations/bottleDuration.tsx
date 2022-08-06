@@ -1,22 +1,22 @@
 import { Alert } from "react-native";
 
 //fn takes depth and rmv from user, converts from string to num, returns consumption rate num (aka C)
-export const getConsumptionRate = (depth: string, rmv: string) => {
-  if (!depth) {
+export const getConsumptionRate = (depth: any, rmv: any) => {
+  if (depth == undefined) {
     return Alert.alert("Error", "Must provide valid depth.");
   } else {
     let numDepth: number = +depth;
     let numRMV: number = +rmv;
-    const consumptionRate = ((numDepth + 33) / 33) * numRMV;
+    const consumptionRate: number = ((numDepth + 33) / 33) * numRMV;
     return consumptionRate;
   }
 };
 
 export const getVolumeAvailable = (
-  minPsi: string,
-  startPsi: string,
-  FV: number,
-  N: number
+  minPsi: any,
+  startPsi: any,
+  FV: any,
+  N: any
 ) => {
   if (!minPsi) {
     return Alert.alert("Error", "Must provide abort pressure.");
@@ -35,7 +35,7 @@ export const getVolumeAvailable = (
   } else {
     let Pc: number = +startPsi;
     let Pa: number = +minPsi;
-    const volAvail = ((Pc - Pa) / 14.7) * FV * N;
+    const volAvail: number = ((Pc - Pa) / 14.7) * FV * N;
     return volAvail;
   }
 };
