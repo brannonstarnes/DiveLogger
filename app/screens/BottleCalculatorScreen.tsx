@@ -5,16 +5,18 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
+  Alert,
 } from "react-native";
 
 import DropDownPicker from "react-native-dropdown-picker";
+
 import {
   getConsumptionRate,
   getDuration,
   getVolumeAvailable,
 } from "../calculations/bottleDuration";
+import { Button } from "@rneui/themed";
 
 export default function BottleCalculatorScreen() {
   const [D, setD] = useState<number | undefined>(); // depth
@@ -27,7 +29,10 @@ export default function BottleCalculatorScreen() {
   const [Va, setVa] = useState<any>(); // Volume of air available
   const [duration, setDuration] = useState<number | undefined>(); // Estimated duration of lowest scuba bottle
   const [open, setOpen] = useState(false);
+  const [openRates, setOpenRates] = useState(false);
+  const [valueRates, setValueRates] = useState(null);
   const [value, setValue] = useState(null);
+
   const [items, setItems] = useState([
     { label: "Aluminum 50", value: 0.281 },
     { label: "Aluminum 63", value: 0.319 },
@@ -38,72 +43,94 @@ export default function BottleCalculatorScreen() {
     { label: "Steel 120", value: 0.526 },
   ]);
 
-  const respiratoryMinuteVolume: object = { Normal: 1.4, Hard: 2.4 }; //represents the breathing rates for normal dives and high intensity dives in cubic feet/min (CFM)
+  const [itemsRates, setItemsRates] = useState([
+    { label: "Normal (1.4)", value: 1.4 },
+    { label: "Hard (2.4)", value: 2.4 },
+    {
+      /*DOUBLE CHECK THIS VALUE!!!!!!!*/
+    },
+  ]);
 
   return (
     <SafeAreaView>
       <View style={styles.depthContainer}>
-        <Text>
-          Depth (fsw):{" "}
-          <TextInput
-            placeholder="0-190"
-            onChange={(userInput: any) => setD(userInput)}
-          />
-        </Text>
-        <Text>Working Rate: </Text>
-      </View>
-      <View style={styles.bottleContainer}>
-        <Button title="Single" onPress={() => setN(1)} />
-        <Button title="Double" onPress={() => setN(2)} />
+        <Text>Depth (fsw): </Text>
+        <TextInput
+          style={styles.depthInput}
+          placeholder="0-190"
+          onChange={(userInput: any) => setD(userInput)}
+        />
         <DropDownPicker
-          open={open}
-          value={value}
-          items={items}
-          setOpen={setOpen}
-          setValue={setValue}
-          setItems={setItems}
+          style={styles.dropDownRates}
+          placeholder="Select a working rate"
+          open={openRates}
+          value={valueRates}
+          items={itemsRates}
+          setOpen={setOpenRates}
+          setValue={setValueRates}
+          setItems={setItemsRates}
           onSelectItem={(item: any) => {
-            return setFV(item);
+            return setRMV(item);
           }}
         />
       </View>
-      <Text>
-        Lowest Bottle psi:{" "}
+      <View style={styles.bottleContainer}>
+        <Button
+          style={{ marginRight: 10, width: 120 }}
+          title="Single"
+          onPress={() => setN(1)}
+        />
+        <Button
+          style={{ marginRight: 10, width: 120 }}
+          title="Double"
+          onPress={() => setN(2)}
+        />
+      </View>
+      <DropDownPicker
+        placeholder="Select Bottle Size"
+        style={styles.dropDownBottles}
+        open={open}
+        value={value}
+        items={items}
+        setOpen={setOpen}
+        setValue={setValue}
+        setItems={setItems}
+        onSelectItem={(item: any) => {
+          return setFV(item);
+        }}
+      />
+      <View style={styles.pressureContainer}>
+        <Text>Lowest Bottle psi:</Text>
         <TextInput
           placeholder="ex. 2900"
           onChange={(userInput: SetStateAction<any>) => {
             setPc(userInput);
           }}
         />
-      </Text>
 
-      <Text>
-        Abort psi:
+        <Text>Abort psi:</Text>
         <TextInput
           placeholder="ex. 250"
           onChange={(userInput: SetStateAction<any>) => {
             setPm(userInput);
           }}
         />
-      </Text>
-
-      <View>
-        <Text>
-          <Button
-            title="Get Result"
-            onPress={() => {
-              let volume = getVolumeAvailable(Pm, Pc, FV, N);
-              let consumpRate: any = getConsumptionRate(D, RMV);
-              setVa(volume);
-              setC(consumpRate);
-              if (Va && C) {
-              }
-              let minutes: number = Va / C;
-              setDuration(minutes);
-            }}
-          />
-          {duration}
-        </Text>
+      </View>
+      <View style={styles.resultContainer}>
+        <Button
+          title="Get Result"
+          onPress={() => {
+            let volume = getVolumeAvailable(Pm, Pc, FV, N);
+            let consumpRate: any = getConsumptionRate(D, RMV);
+            setVa(volume);
+            setC(consumpRate);
+            if (Va && C) {
+            }
+            let minutes: number = Va / C;
+            setDuration(minutes);
+          }}
+        />
+        {duration}
       </View>
     </SafeAreaView>
   );
@@ -111,9 +138,47 @@ export default function BottleCalculatorScreen() {
 
 const styles = StyleSheet.create({
   bottleContainer: {
-    backgroundColor: "gray",
+    marginVertical: 10,
+    zIndex: -1,
+    flexDirection: "row",
+    height: 60,
+    width: 400,
+    justifyContent: "center",
   },
   depthContainer: {
-    backgroundColor: "yellow",
+    flexDirection: "row",
+    height: 80,
+    width: 190,
+    padding: 30,
+  },
+  depthInput: {
+    height: 20,
+    width: 60,
+    marginRight: 20,
+    backgroundColor: "white",
+    padding: 10,
+    textAlign: "center",
+  },
+  dropDownBottles: {
+    zIndex: -3,
+    width: 250,
+    marginLeft: 70,
+    marginBottom: 10,
+  },
+  dropDownRates: {
+    zIndex: 1,
+    width: 190,
+    position: "absolute",
+    bottom: -15,
+  },
+  pressureContainer: {
+    height: 100,
+    width: 400,
+    backgroundColor: "turquoise",
+  },
+  resultContainer: {
+    height: 100,
+    width: 400,
+    backgroundColor: "pink",
   },
 });
