@@ -1,4 +1,4 @@
-import React, { SetStateAction } from "react";
+import React, { SetStateAction, useEffect } from "react";
 import { useState } from "react";
 import {
   SafeAreaView,
@@ -19,14 +19,14 @@ import {
 import { Button } from "@rneui/themed";
 
 export default function BottleCalculatorScreen() {
-  const [D, setD] = useState<number | undefined>(); // depth
-  const [Pm, setPm] = useState<number | undefined>(); // Minimum pressure (abort pressure)
-  const [Pc, setPc] = useState<number | undefined>(); // Lowest pressure at start of dive
-  const [RMV, setRMV] = useState<number>(); // Resp Minute Volume
-  const [FV, setFV] = useState<number | undefined>(); // Floodable Volume
-  const [N, setN] = useState<number | undefined>(); // Number of bottles
-  const [C, setC] = useState<any>(); // Consumption Rate
-  const [Va, setVa] = useState<any>(); // Volume of air available
+  const [D, setD] = useState<number | undefined>(0); // depth
+  const [Pm, setPm] = useState<number | undefined>(0); // Minimum pressure (abort pressure)
+  const [Pc, setPc] = useState<number | undefined>(0); // Lowest pressure at start of dive
+  const [RMV, setRMV] = useState<number>(0); // Resp Minute Volume
+  const [FV, setFV] = useState<number | undefined>(0); // Floodable Volume
+  const [N, setN] = useState<number | undefined>(0); // Number of bottles
+  const [C, setC] = useState<any>(0); // Consumption Rate
+  const [Va, setVa] = useState<any>(0); // Volume of air available
   const [duration, setDuration] = useState<number | undefined>(); // Estimated duration of lowest scuba bottle
   const [open, setOpen] = useState(false);
   const [openRates, setOpenRates] = useState(false);
@@ -51,14 +51,17 @@ export default function BottleCalculatorScreen() {
     },
   ]);
 
+  var results: number | undefined;
+
   return (
     <SafeAreaView>
       <View style={styles.depthContainer}>
-        <Text>Depth (fsw): </Text>
+        <Text style={styles.depthText}>Depth (fsw): </Text>
         <TextInput
           style={styles.depthInput}
           placeholder="0-190"
-          onChange={(userInput: any) => setD(userInput)}
+          onChangeText={setD}
+          clearTextOnFocus={true}
         />
         <DropDownPicker
           style={styles.dropDownRates}
@@ -70,7 +73,8 @@ export default function BottleCalculatorScreen() {
           setValue={setValueRates}
           setItems={setItemsRates}
           onSelectItem={(item: any) => {
-            return setRMV(item);
+            console.log("Rate: ", item.value);
+            return setRMV(item.value);
           }}
         />
       </View>
@@ -78,12 +82,16 @@ export default function BottleCalculatorScreen() {
         <Button
           style={{ marginRight: 10, width: 120 }}
           title="Single"
-          onPress={() => setN(1)}
+          onPress={() => {
+            setN(1), console.log("Selected single");
+          }}
         />
         <Button
           style={{ marginRight: 10, width: 120 }}
           title="Double"
-          onPress={() => setN(2)}
+          onPress={() => {
+            setN(2), console.log("Selected Double");
+          }}
         />
       </View>
       <DropDownPicker
@@ -96,47 +104,79 @@ export default function BottleCalculatorScreen() {
         setValue={setValue}
         setItems={setItems}
         onSelectItem={(item: any) => {
-          return setFV(item);
+          console.log("Bottle Size: ", item.value);
+          return setFV(item.value);
         }}
       />
       <View style={styles.pressureContainer}>
-        <Text>Lowest Bottle psi:</Text>
+        <Text style={styles.bottleText}>Lowest Bottle psi:</Text>
         <TextInput
+          style={styles.bottleInput}
           placeholder="ex. 2900"
-          onChange={(userInput: SetStateAction<any>) => {
+          onChangeText={(userInput: SetStateAction<any>) => {
+            console.log("Lowest Pressure: ", userInput);
             setPc(userInput);
           }}
         />
 
-        <Text>Abort psi:</Text>
+        <Text style={styles.abortText}>Abort psi:</Text>
         <TextInput
+          style={styles.abortInput}
           placeholder="ex. 250"
-          onChange={(userInput: SetStateAction<any>) => {
+          onChangeText={(userInput: SetStateAction<any>) => {
+            console.log("Abort psi: ", userInput);
             setPm(userInput);
           }}
         />
       </View>
+      <Button
+        title="Get Result"
+        onPress={() => {
+          console.log(
+            "D: ",
+            D,
+            "RMV: ",
+            RMV,
+            "N: ",
+            N,
+            "FV: ",
+            FV,
+            "Pc: ",
+            Pc,
+            "Pm: ",
+            Pm
+          );
+          let consumptionRate: any = getConsumptionRate(D, RMV);
+          let volumeAvailable: any = getVolumeAvailable(Pm, Pc, FV, N);
+          results = getDuration(volumeAvailable, consumptionRate);
+          results = +results.toFixed(2); //takes the results string and makes it a rounded number
+          console.log(
+            "C: ",
+            consumptionRate,
+            "Va: ",
+            volumeAvailable,
+            "results: ",
+            results.toFixed(2)
+          );
+          setDuration(results);
+        }}
+      />
       <View style={styles.resultContainer}>
-        <Button
-          title="Get Result"
-          onPress={() => {
-            let volume = getVolumeAvailable(Pm, Pc, FV, N);
-            let consumpRate: any = getConsumptionRate(D, RMV);
-            setVa(volume);
-            setC(consumpRate);
-            if (Va && C) {
-            }
-            let minutes: number = Va / C;
-            setDuration(minutes);
-          }}
-        />
-        {duration}
+        <Text style={styles.durationText}>{duration} minutes</Text>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  abortInput: {
+    backgroundColor: "white",
+    width: 150,
+    height: 30,
+  },
+  abortText: {
+    fontSize: 20,
+  },
   bottleContainer: {
     marginVertical: 10,
     zIndex: -1,
@@ -145,19 +185,31 @@ const styles = StyleSheet.create({
     width: 400,
     justifyContent: "center",
   },
+  bottleText: {
+    fontSize: 20,
+  },
+  bottleInput: {
+    backgroundColor: "white",
+    height: 30,
+    width: 150,
+    marginBottom: 10,
+  },
   depthContainer: {
     flexDirection: "row",
-    height: 80,
+    height: 90,
     width: 190,
     padding: 30,
   },
   depthInput: {
-    height: 20,
+    height: 30,
     width: 60,
     marginRight: 20,
     backgroundColor: "white",
     padding: 10,
     textAlign: "center",
+  },
+  depthText: {
+    fontSize: 20,
   },
   dropDownBottles: {
     zIndex: -3,
@@ -167,18 +219,24 @@ const styles = StyleSheet.create({
   },
   dropDownRates: {
     zIndex: 1,
-    width: 190,
+    width: 170,
     position: "absolute",
     bottom: -15,
   },
+  durationText: {
+    fontSize: 50,
+    marginTop: 40,
+  },
   pressureContainer: {
-    height: 100,
+    height: 150,
     width: 400,
-    backgroundColor: "turquoise",
+    paddingHorizontal: 30,
+    paddingVertical: 10,
   },
   resultContainer: {
-    height: 100,
-    width: 400,
-    backgroundColor: "pink",
+    height: 292,
+    width: 414,
+    alignItems: "center",
+    backgroundColor: "grey",
   },
 });
