@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect } from "react";
+import React, { SetStateAction } from "react";
 import { useState } from "react";
 import {
   SafeAreaView,
@@ -25,14 +25,13 @@ export default function BottleCalculatorScreen() {
   const [RMV, setRMV] = useState<number>(0); // Resp Minute Volume
   const [FV, setFV] = useState<number | undefined>(0); // Floodable Volume
   const [N, setN] = useState<number | undefined>(0); // Number of bottles
-  const [C, setC] = useState<any>(0); // Consumption Rate
-  const [Va, setVa] = useState<any>(0); // Volume of air available
   const [duration, setDuration] = useState<number | undefined>(); // Estimated duration of lowest scuba bottle
-  const [open, setOpen] = useState(false);
-  const [openRates, setOpenRates] = useState(false);
-  const [valueRates, setValueRates] = useState(null);
-  const [value, setValue] = useState(null);
+  const [open, setOpen] = useState(false); //for the bottle dropdown picker
+  const [value, setValue] = useState(null); //for values of bottle dropdown picker
+  const [openRates, setOpenRates] = useState(false); //for working rate dropdown picker
+  const [valueRates, setValueRates] = useState(null); //for working reate dropdown picker values
 
+  /*labels represent the material and size (cubic feet of air), values are floodable volume of the bottle (cubic feet of water). Ref US Navy Dive Man table 7-1*/
   const [items, setItems] = useState([
     { label: "Aluminum 50", value: 0.281 },
     { label: "Aluminum 63", value: 0.319 },
@@ -43,15 +42,26 @@ export default function BottleCalculatorScreen() {
     { label: "Steel 120", value: 0.526 },
   ]);
 
+  /*labels represent the aerobic difficulty of the dive, value is the Respiratory Minute Volume (actual cubic feet per minute) breathed by a diver. Ref US Navy Dive Man table 3-6*/
   const [itemsRates, setItemsRates] = useState([
     { label: "Normal (1.4)", value: 1.4 },
     { label: "Hard (2.4)", value: 2.4 },
-    {
-      /*DOUBLE CHECK THIS VALUE!!!!!!!*/
-    },
   ]);
 
-  var results: number | undefined;
+  var durationResults: number | undefined;
+
+  //Checks textInputs for numbers only
+  function isNumber(value: any) {
+    return /^[0-9]+$/.test(value);
+  }
+
+  //Error Messages Creator
+  function createErrorMsg(varName: string) {
+    return Alert.alert(
+      "Error",
+      `Please enter a valid ${varName}. Value must be number only.`
+    );
+  }
 
   return (
     <SafeAreaView>
@@ -109,7 +119,7 @@ export default function BottleCalculatorScreen() {
         }}
       />
       <View style={styles.pressureContainer}>
-        <Text style={styles.bottleText}>Lowest Bottle psi:</Text>
+        <Text style={styles.bottleText}>Lowest Start psi:</Text>
         <TextInput
           style={styles.bottleInput}
           placeholder="ex. 2900"
@@ -132,33 +142,43 @@ export default function BottleCalculatorScreen() {
       <Button
         title="Get Result"
         onPress={() => {
-          console.log(
-            "D: ",
-            D,
-            "RMV: ",
-            RMV,
-            "N: ",
-            N,
-            "FV: ",
-            FV,
-            "Pc: ",
-            Pc,
-            "Pm: ",
-            Pm
-          );
+          // console.log(
+          //   "D: ",
+          //   D,
+          //   "RMV: ",
+          //   RMV,
+          //   "N: ",
+          //   N,
+          //   "FV: ",
+          //   FV,
+          //   "Pc: ",
+          //   Pc,
+          //   "Pm: ",
+          //   Pm
+          // );
+          console.log(isNumber(D));
+          if (D == 0 || !isNumber(D)) {
+            return createErrorMsg("Depth");
+          }
+          if (Pm == 0 || !isNumber(Pm)) {
+            return createErrorMsg("Abort Pressure");
+          }
+          if (Pc == 0 || !isNumber(Pc)) {
+            return createErrorMsg("Starting Pressure");
+          }
           let consumptionRate: any = getConsumptionRate(D, RMV);
           let volumeAvailable: any = getVolumeAvailable(Pm, Pc, FV, N);
-          results = getDuration(volumeAvailable, consumptionRate);
-          results = +results.toFixed(2); //takes the results string and makes it a rounded number
+          durationResults = getDuration(volumeAvailable, consumptionRate);
+          durationResults = +durationResults.toFixed(2); //takes the durationResults string and makes it a rounded number
           console.log(
             "C: ",
             consumptionRate,
             "Va: ",
             volumeAvailable,
-            "results: ",
-            results.toFixed(2)
+            "durationResults: ",
+            durationResults.toFixed(2)
           );
-          setDuration(results);
+          setDuration(durationResults);
         }}
       />
       <View style={styles.resultContainer}>
