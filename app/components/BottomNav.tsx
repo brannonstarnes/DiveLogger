@@ -9,19 +9,21 @@ export default function BottomNav() {
 
   const logsIcon = (
     <Pressable onPress={() => navigation.navigate("Dive Logs")}>
-      <FontAwesome5 size={32} name={"clock"} />
+      <FontAwesome5 style={styles.icon} size={32} name={"clock"} />
     </Pressable>
   );
   const calcIcon = (
     <Pressable onPress={() => navigation.navigate("Bottle Duration")}>
-      <FontAwesome5 size={32} name={"calculator"} />
+      <FontAwesome5 style={styles.icon} size={32} name={"calculator"} />
     </Pressable>
   );
-  const decoIcon = <FontAwesome5 size={32} name={"chart-line"} />;
+  const decoIcon = (
+    <FontAwesome5 style={styles.icon} size={32} name={"chart-line"} />
+  );
 
   const aboutIcon = (
     <Pressable onPress={() => navigation.navigate("About")}>
-      <FontAwesome5 size={32} name={"info"} />
+      <FontAwesome5 style={styles.icon} size={32} name={"info"} />
     </Pressable>
   );
 
@@ -45,5 +47,8 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "space-around",
     height: 52,
+  },
+  icon: {
+    paddingHorizontal: 7,
   },
 });

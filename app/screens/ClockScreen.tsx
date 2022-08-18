@@ -402,8 +402,8 @@ export default function ClockScreen() {
             </ScrollView>
           </DataTable>
         </View>
-        <BottomNav />
       </View>
+      <BottomNav />
     </SafeAreaView>
   );
 }
