@@ -11,7 +11,6 @@ import React, { useState, useEffect, SetStateAction } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Button } from "@rneui/themed";
 import { DataTable } from "react-native-paper";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 import {
   addLeadingZerosToTimes,
@@ -27,11 +26,7 @@ import {
   stringToNumber,
 } from "../calculations/tableSchedRGD";
 import chartMap from "../calculations/charts";
-
-const logsIcon = <FontAwesome5 size={32} name={"clock"} />;
-const calcIcon = <FontAwesome5 size={32} name={"calculator"} />;
-const decoIcon = <FontAwesome5 size={32} name={"chart-line"} />;
-const aboutIcon = <FontAwesome5 size={32} name={"info"} />;
+import BottomNav from "../components/BottomNav";
 
 export default function ClockScreen() {
   const [isRunning, setIsRunning] = useState(false);
@@ -407,11 +402,7 @@ export default function ClockScreen() {
             </ScrollView>
           </DataTable>
         </View>
-        <View style={styles.BottomNavContainer}>
-          <Text style={styles.navButtons}>
-            {logsIcon} | {calcIcon} | {decoIcon} | {aboutIcon}
-          </Text>
-        </View>
+        <BottomNav />
       </View>
     </SafeAreaView>
   );
@@ -424,14 +415,6 @@ const styles = StyleSheet.create({
   buttonGroup2: {
     width: 170,
     marginLeft: 40,
-  },
-  BottomNavContainer: {
-    position: "absolute",
-    top: 626,
-    justifyContent: "center",
-    backgroundColor: "purple",
-    width: 414,
-    height: 50,
   },
   clockNumbers: {
     position: "relative",
@@ -475,11 +458,11 @@ const styles = StyleSheet.create({
     width: 381,
     height: 300,
   },
-  navButtons: {
-    textAlign: "center",
-    fontSize: 25,
-    color: "white",
-  },
+  // navButtons: {
+  //   textAlign: "center",
+  //   fontSize: 25,
+  //   color: "white",
+  // },
   o2ButtonActive: {
     title: "Off O2",
     size: "lg",
