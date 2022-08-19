@@ -28,7 +28,7 @@ export default function WelcomeScreen({ navigation }: any) {
           <View style={styles.logoContainer}>
             <Image
               style={styles.logo}
-              source={require("../assets/logo1.png")}
+              source={require("../assets/diverSilhouette.png")}
             />
             <Text style={{ fontSize: 36 }}>Navy Dive Logger</Text>
           </View>
@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: "white",
-    fontWeight: "bold",
     textAlign: "center",
   },
   modalText: {
@@ -134,8 +133,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   logo: {
+    resizeMode: "center",
     height: 300,
-    width: 300,
+    width: 500,
     opacity: 1,
   },
   logoContainer: {
