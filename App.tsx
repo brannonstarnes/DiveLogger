@@ -2,6 +2,7 @@ import * as React from "react";
 
 import WelcomeScreen from "./app/screens/WelcomeScreen";
 import ClockScreen from "./app/screens/ClockScreen";
+import BottleCalculatorScreen from "./app/screens/BottleCalculatorScreen";
 
 import { Provider as PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
@@ -14,12 +15,17 @@ export default function App() {
     <PaperProvider>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Welcome"
             component={WelcomeScreen}
             options={{ title: "Login" }}
           />
-          <Stack.Screen name="Dive Logs" component={ClockScreen} />
+          <Stack.Screen name="Dive Logs" component={ClockScreen} /> */}
+          <Stack.Screen
+            name="Bottle Duration"
+            component={BottleCalculatorScreen}
+            options={{ title: "Bottle Duration" }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
