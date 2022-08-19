@@ -95,6 +95,7 @@ export default function BottleCalculatorScreen() {
         <Button
           style={{ marginRight: 10, width: 120 }}
           title="Single"
+          type={N == 1 ? "solid" : "outline"}
           onPress={() => {
             setN(1), console.log("Selected single");
           }}
@@ -102,6 +103,7 @@ export default function BottleCalculatorScreen() {
         <Button
           style={{ marginRight: 10, width: 120 }}
           title="Double"
+          type={N == 2 ? "solid" : "outline"}
           onPress={() => {
             setN(2), console.log("Selected Double");
           }}
@@ -126,6 +128,7 @@ export default function BottleCalculatorScreen() {
         <TextInput
           style={styles.bottleInput}
           placeholder="ex. 2900"
+          clearTextOnFocus={true}
           onChangeText={(userInput: SetStateAction<any>) => {
             console.log("Lowest Pressure: ", userInput);
             setPc(userInput);
@@ -136,6 +139,7 @@ export default function BottleCalculatorScreen() {
         <TextInput
           style={styles.abortInput}
           placeholder="ex. 250"
+          clearTextOnFocus={true}
           onChangeText={(userInput: SetStateAction<any>) => {
             console.log("Abort psi: ", userInput);
             setPm(userInput);
@@ -201,7 +205,7 @@ export default function BottleCalculatorScreen() {
 const styles = StyleSheet.create({
   abortInput: {
     backgroundColor: "white",
-    width: 150,
+    width: 250,
     height: 30,
   },
   abortText: {
@@ -230,7 +234,7 @@ const styles = StyleSheet.create({
   bottleInput: {
     backgroundColor: "white",
     height: 30,
-    width: 150,
+    width: 250,
     marginBottom: 10,
   },
   depthContainer: {
@@ -280,6 +284,7 @@ const styles = StyleSheet.create({
     fontSize: 50,
   },
   pressureContainer: {
+    alignItems: "center",
     height: 150,
     width: 400,
     paddingHorizontal: 30,
