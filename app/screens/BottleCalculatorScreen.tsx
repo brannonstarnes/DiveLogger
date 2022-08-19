@@ -17,6 +17,7 @@ import {
   getVolumeAvailable,
 } from "../calculations/bottleDuration";
 import { Button } from "@rneui/themed";
+import BottomNav from "../components/BottomNav";
 
 export default function BottleCalculatorScreen() {
   const [D, setD] = useState<number | undefined>(0); // depth
@@ -184,6 +185,7 @@ export default function BottleCalculatorScreen() {
       <View style={styles.resultContainer}>
         <Text style={styles.durationText}>{duration} minutes</Text>
       </View>
+      <BottomNav />
     </SafeAreaView>
   );
 }
