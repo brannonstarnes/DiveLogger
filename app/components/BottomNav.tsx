@@ -45,14 +45,11 @@ export default function BottomNav(props: any) {
   };
 
   const sendLogs = async (logData: any) => {
-    // logData = JSON.stringify(logData);
     var options = {};
-    // if (logData) {
     options = {
       subject: "Dive Logs Sent Via Dive Logger App",
       recipients: [], //USER EMAIL GOES HERE
       body: JSON.stringify(logData),
-      // };
     };
 
     let promise = new Promise((resolve, reject) => {
