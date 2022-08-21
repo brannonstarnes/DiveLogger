@@ -9,7 +9,7 @@ interface DiveLogProps {
   diveLog: object;
 }
 
-export default function BottomNav(props) {
+export default function BottomNav(props: any) {
   const navigation = useNavigation();
 
   //***************EMAIL ICON FUNCTIONALITY*************************** */
@@ -29,12 +29,19 @@ export default function BottomNav(props) {
         },
         {
           text: "Yes",
-          onPress: () => sendLogs(Object.values(props.diveLog)),
+          onPress: () => {
+            const messageBody = Object.values(props.diveLog);
+            if (messageBody.length === 0) {
+              return Alert.alert(
+                "Error",
+                "No dive logs found. Nothing to send."
+              );
+            }
+            sendLogs(messageBody);
+          },
         },
       ]
     );
-
-    console.log(Object.values(props.diveLog));
   };
 
   const sendLogs = async (logData: any) => {
