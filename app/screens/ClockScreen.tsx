@@ -260,6 +260,13 @@ export default function ClockScreen() {
               title={onO2 ? "Off O2" : "On O2"}
               type={onO2 ? "solid" : "outline"}
               onPress={() => {
+                /* Clock must be running (dive started) to go on O2. NOTE: This is for In-water or chamber O2 only, NOT surface O2. This will go away for Mk-25/Mk-16 dives. */
+                if (isRunning == false) {
+                  return Alert.alert(
+                    "Error",
+                    "Cannot go On O2. Dive has not started."
+                  );
+                }
                 {
                   /*====Go ON O2====*/
                 }
@@ -320,12 +327,19 @@ export default function ClockScreen() {
               title={onHold ? "Resume" : "HOLD!"}
               size="lg"
               onPress={() => {
+                //Clock must be running (dive has started) to be eligible for a Hold
+                if (!isRunning) {
+                  return Alert.alert(
+                    "Error",
+                    "Hold not possible. Dive has not started."
+                  );
+                }
                 const hold = new Date();
                 const stringHold = stringifyTime(hold);
 
                 if (onHold == false) {
                   setOnHold(true);
-                  setHoldStart(hold);
+                  setHoldStart(hold); //marks the starting time of the hold
                   //REQUIRES 2 INPUTS, NESTED ALERT PROMPTS GET NEEDED INFO HERE
                   Alert.prompt("HOLD!", "Please Enter Depth:", [
                     {
