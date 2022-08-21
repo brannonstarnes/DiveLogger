@@ -43,7 +43,7 @@ export default function BottomNav(props) {
     // if (logData) {
     options = {
       subject: "Dive Logs Sent Via Dive Logger App",
-      recipients: ["brannlee808@gmail.com"],
+      recipients: [], //USER EMAIL GOES HERE
       body: JSON.stringify(logData),
       // };
     };
