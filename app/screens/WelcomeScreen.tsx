@@ -1,7 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import {
-  Button,
   Image,
   StyleSheet,
   Text,
@@ -13,7 +12,6 @@ import {
   ImageBackground,
 } from "react-native";
 
-const bgImage = "../assets";
 export default function WelcomeScreen({ navigation }: any) {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -30,6 +28,7 @@ export default function WelcomeScreen({ navigation }: any) {
               style={styles.logo}
               source={require("../assets/diverSilhouette.png")}
             />
+            {/*https://www.pngitem.com/middle/JbRmRw_diver-silhouette-png-transparent-image-scuba-diver-silhouette/ */}
             <Text style={{ fontSize: 36 }}>Navy Dive Logger</Text>
           </View>
           <View style={styles.buttonsContainer}>
@@ -101,14 +100,6 @@ const styles = StyleSheet.create({
   buttonOpen: {
     backgroundColor: "#F194FF",
   },
-  textStyle: {
-    color: "white",
-    textAlign: "center",
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-  },
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -145,6 +136,10 @@ const styles = StyleSheet.create({
     fontSize: 30,
     opacity: 1,
   },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
   modalView: {
     margin: 20,
     backgroundColor: "white",
@@ -159,6 +154,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  textStyle: {
+    color: "white",
+    textAlign: "center",
   },
   registerButton: {
     margin: 10,

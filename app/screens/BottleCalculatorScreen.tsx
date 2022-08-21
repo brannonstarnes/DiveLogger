@@ -20,6 +20,7 @@ import {
 } from "../calculations/bottleDuration";
 import { Button } from "@rneui/themed";
 import BottomNav from "../components/BottomNav";
+import isNumber from "../calculations/isNumber";
 
 export default function BottleCalculatorScreen() {
   const [D, setD] = useState<number | undefined>(0); // depth
@@ -53,10 +54,6 @@ export default function BottleCalculatorScreen() {
 
   var durationResults: number | undefined;
   const minutes = [duration != undefined ? "minutes" : ""];
-  //Checks textInputs for numbers only
-  function isNumber(value: any) {
-    return /^[0-9]+$/.test(value);
-  }
 
   //Error Messages Creator
   function createErrorMsg(varName: string) {
@@ -193,6 +190,8 @@ export default function BottleCalculatorScreen() {
           style={styles.bottleImg}
           source={require("../assets/bottleSilhouette.png")}
         >
+          {" "}
+          {/*https://svgsilh.com/png-512/297321.png*/}
           <Text style={styles.durationText}>{duration}</Text>
           <Text style={styles.minutesText}>{minutes}</Text>
         </ImageBackground>
