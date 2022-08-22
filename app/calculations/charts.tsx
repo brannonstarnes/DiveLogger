@@ -1,61 +1,121 @@
 // TODO: Commented out are Decompression Tables. Once No-Deco is complete, will finish Deco tables.
+//LEGAL: should this section be completed?
 
-// const thirtyDeco380 = {
+//==============DECOMPRESSION REQUIRED=================
+
+//-------------30 FSW-------------------
+// const thirty380 = {
 //     deco: true,
 //     desig: "Z",
-//     stop20fsw: "YES",
-//     air20fsw: ":05",
-//     oxy20fsw: ":01",
-//     periods: ".05",
+//     stops: [{"20":"air/O2 :05/:01"}"20"]
+//     periods: ".5",
 //   };
-//   const thirtyDeco420 = {
+//   const thirty420 = {
 //     deco: true,
 //     desig: "Z",
-//     stop20fsw: "YES",
-//     air20fsw: ":22",
-//     oxy20fsw: ":05",
-//     periods: ".05",
+//     stops: [{"20": "air/O2 :22/:02"}],
+//     periods: ".5",
 //   };
-//   const thirtyDeco480 = {
+//   const thirty480 = {
 //     deco: true,
 //     desig: "Z",
-//     stop20fsw: "YES",
-//     air20fsw: ":42",
-//     oxy20fsw: ":09",
-//     periods: ".05",
+//     stops: [{"20":"air/O2 :42/:09"}],
+//     periods: ".5",
 //   };
-//   const thirtyDeco540 = {
+//   const thirty540 = {
 //     deco: true,
 //     desig: "Z",
-//     stop20fsw: "YES",
-//     air20fsw: ":71",
-//     oxy20fsw: ":14",
+//     stops: [{"20":"air/O2 :71/:14"}],
 //     periods: "1",
 //   };
-//   const thirtyDeco600 = {
+//   const thirty600 = {
 //     deco: true,
 //     desig: "Z",
-//     stop20fsw: "YES",
-//     air20fsw: ":92",
-//     oxy20fsw: ":19",
+//     stops: [{"20":"air/O2 :92/:19"}],
 //     periods: "1",
 //   };
-//   const thirtyDeco660 = {
+//   const thirty660 = {
 //     deco: true,
 //     desig: "Z",
-//     stop20fsw: "YES",
-//     air20fsw: ":120",
-//     oxy20fsw: ":22",
+//     stops: [{"20":"air/O2 :120/:22"}],
 //     periods: "1",
 //   };
-//   const thirtyDeco720 = {
+//   const thirty720 = {
 //     deco: true,
 //     desig: "Z",
-//     stop20fsw: "YES",
-//     air20fsw: ":158",
-//     oxy20fsw: ":27",
+//     stops: [{"20":"air/O2 :158/:27"}],
 //     periods: "1",
 //   };
+
+//-------------------------35 FSW--------------------------------------
+//  const thiryFive240 = {
+//    deco: true,
+//    desig: "Z",
+//    stops: [{"20":"air/O2 :04/:02"}],
+//    periods: ".5",
+//   };
+//  const thiryFive270 = {
+//    deco: true,
+//    desig: "Z",
+//    stops: [{"20":"air/O2 :28/:07"}],
+//    periods: ".5",
+//   };
+//  const thiryFive300 = {
+//    deco: true,
+//    desig: "Z",
+//    stops: [{"20":"air/O2 :53/:13"}],
+//    periods: ".5",
+//   };
+//  const thiryFive330 = {
+//    deco: true,
+//    desig: "Z",
+//    stops: [{"20":"air/O2 :71/:18"}],
+//    periods: "1",
+//   };
+//  const thiryFive360 = {
+//    deco: true,
+//    desig: "Z",
+//    stops: [{"20":"air/O2 :88/:22"}],
+//    periods: "1",
+//   };
+//  const thiryFive420 = {
+//    deco: true,
+//    desig: "Z",
+//    stops: [{"20": "air/O2 :134/:29"}],
+//    periods: "1.5",
+//   };
+//  const thiryFive480 = {
+//    deco: true,
+//    desig: "Z",
+//    stops: [{"20":"air/O2 :158/:27"}],
+//    periods: "1",
+//   };
+//  const thiryFive540 = {
+//    deco: true,
+//    desig: "Z",
+//    stops: [{"20":"air/O2 :158/:27"}],
+//    periods: "1",
+//   };
+//  const thiryFive600 = {
+//    deco: true,
+//    desig: "Z",
+//    stops: [{"20":"air/O2 :158/:27"}],
+//    periods: "1",
+//   };
+//  const thiryFive660 = {
+//    deco: true,
+//    desig: "Z",
+//    stops: [{"20":"air/O2 :158/:27"}],
+//    periods: "1",
+//   };
+//  const thiryFive720 = {
+//    deco: true,
+//    desig: "Z",
+//    stops: [{"20":"air/O2 :158/:27"}],
+//    periods: "1",
+//   };
+
+// =========================NO DECO TABLES===========================
 
 const noD10 = {
   57: "A",
@@ -65,6 +125,7 @@ const noD10 = {
   426: "E",
   Unlimited: "F",
 };
+
 const noD15 = {
   36: "A",
   60: "B",
@@ -125,13 +186,13 @@ const noD30 = {
   260: "N",
   307: "O",
   371: "Z",
-  // 380: thirtyDeco380,
-  // 420: thirtyDeco420,
-  // 480: thirtyDeco480,
-  // 540: thirtyDeco540,
-  // 600: thirtyDeco600,
-  // 660: thirtyDeco660,
-  // 720: thirtyDeco720,
+  380: "Z DECO REQ'D",
+  420: "Z DECO REQ'D",
+  480: "__ DECO REQ'D",
+  540: "__ DECO REQ'D",
+  600: "__ DECO REQ'D!",
+  660: "__ DECO REQ'D!",
+  720: "__ DECO REQ'D!",
 };
 
 const noD35 = {
@@ -151,17 +212,17 @@ const noD35 = {
   190: "N",
   215: "O",
   232: "Z",
-  240: "Z Decompression Stop! 20fsw - AIR :4 / O2 :02  SURD O2 Period: 0.5",
-  270: "Z Decompression Stop! 20fsw - AIR :28 / O2 :07 / RECOMMEND SURD O2 Period: 0.5",
-  300: "Z Decompression Stop! 20fsw - AIR :53 / O2 :13 / RECOMMEND SURD O2 Period: 0.5",
-  330: "Z Decompression Stop! 20fsw - AIR :71 / O2 :18 / RECOMMEND SURD O2 Period: 1",
-  360: "__ Decompression Stop! 20fsw - AIR :88 / O2 :22 / RECOMMEND SURD O2 Period  1",
-  420: "__ EXCEPTIONAL EXPOSURE- In-Water O2 or SURD REQUIRED! 20fsw - AIR :134  / O2 :29 / SURD O2 Periods:  1.5",
-  480: "__ EXCEPTIONAL EXPOSURE- In-Water O2 or SURD REQUIRED! 20fsw - AIR :173  / O2 :38 / SURD O2 Periods:  1.5",
-  540: "__ EXCEPTIONAL EXPOSURE- In-Water O2 or SURD REQUIRED! 20fsw - AIR :228  / O2 :45 / SURD O2 Periods:  2",
-  600: "__ EXCEPTIONAL EXPOSURE- In-Water O2 or SURD REQUIRED! 20fsw - AIR :277  / O2 :53 / SURD O2 Periods:  2",
-  660: "__ EXCEPTIONAL EXPOSURE- In-Water O2 or SURD REQUIRED! 20fsw - AIR :314  / O2 :63 / SURD O2 Periods:  2.5",
-  720: "__ EXCEPTIONAL EXPOSURE- In-Water O2 or SURD REQUIRED! 20fsw - AIR :342  / O2 :71 / SURD O2 Periods:  3",
+  240: "Z DECO REQ'D",
+  270: "Z DECO REQ'D",
+  300: "Z DECO REQ'D",
+  330: "Z DECO REQ'D",
+  360: "__ DECO REQ'D!",
+  420: "__ DECO REQ'D!",
+  480: "__ DECO REQ'D!",
+  540: "__ DECO REQ'D!",
+  600: "__ DECO REQ'D!",
+  660: "__ DECO REQ'D!",
+  720: "__ DECO REQ'D!",
 };
 const noD40 = {
   12: "A",
@@ -179,24 +240,24 @@ const noD40 = {
   135: "M",
   151: "N",
   163: "O",
-  170: "O Decompression Stop! 20fsw - AIR :06 / O2 :02 SURD O2 Period: 0.5",
-  180: "Z Decompression Stop! 20fsw - AIR :14 / O2 :05 SURD O2 Period: 0.5",
-  190: "Z Decompression Stop! 20fsw - AIR :21 / O2 :07 / SURD O2 Period: 0.5",
-  200: "Z Decompression Stop! 20fsw - AIR :27 / O2 :09 / SURD O2 Period: 0.5",
-  210: "Z Decompression Stop! 20fsw - AIR :39 / O2 :11 / SURD O2 Period: 0.5",
-  220: "Z Decompression Stop! 20fsw - AIR :52 / O2 :12 / SURD O2 Period: 0.5",
-  230: "Z Decompression Stop! 20fsw - AIR :64 / O2 :16 / SURD O2 Period: 1",
-  240: "Z Decompression Stop! 20fsw - AIR :75 / O2 :19 / SURD O2 Period: 1",
-  270: "Z (EXCEPTIONAL EXPOSURE) In-Water O2 or SURD REQUIRED! 20fsw - AIR :101 / O2 :26 / SURD O2 Period: 1",
-  300: "__(EXCEPTIONAL EXPOSURE) In-Water O2 or SURD REQUIRED! 20fsw - AIR :128 / O2 :33 / SURD O2 Periods: 1.5",
-  330: "__(EXCEPTIONAL EXPOSURE) In-Water O2 or SURD REQUIRED! 20fsw - AIR :160 / O2 :38 / SURD O2 Periods: 1.5",
-  360: "__(EXCEPTIONAL EXPOSURE) In-Water O2 or SURD REQUIRED! 20fsw - AIR :184 / O2 :44 / SURD O2 Periods: 2",
-  420: "__(EXCEPTIONAL EXPOSURE) In-Water O2 or SURD REQUIRED! 20fsw - AIR :248 / O2 :56 / SURD O2 Periods: 2.5",
-  480: "__(EXCEPTIONAL EXPOSURE) In-Water O2 or SURD REQUIRED! 20fsw - AIR :321 / O2 :68 / SURD O2 Periods: 2.5",
-  540: "__(EXCEPTIONAL EXPOSURE) SURD REQUIRED! 20fsw - AIR :372 / O2 :80 / SURD O2 Periods: 3",
-  600: "__(EXCEPTIONAL EXPOSURE) SURD REQUIRED! 20fsw - AIR :410 / O2 :93 / SURD O2 Periods: 3.5",
-  660: "__(EXCEPTIONAL EXPOSURE) SURD REQUIRED! 20fsw - AIR :439 / O2 :103 / SURD O2 Periods: 4",
-  720: "__(EXCEPTIONAL EXPOSURE) SURD REQUIRED! 20fsw - AIR :461 / O2 :112 / SURD O2 Periods: 4.5",
+  170: "O DECO REQ'D",
+  180: "Z DECO REQ'D",
+  190: "Z DECO REQ'D",
+  200: "Z DECO REQ'D",
+  210: "Z DECO REQ'D",
+  220: "Z DECO REQ'D",
+  230: "Z DECO REQ'D",
+  240: "Z DECO REQ'D",
+  270: "Z DECO REQ'D",
+  300: "__ DECO REQ'D",
+  330: "__ DECO REQ'D",
+  360: "__ DECO REQ'D",
+  420: "__ DECO REQ'D",
+  480: "__ DECO REQ'D",
+  540: "__ DECO REQ'D",
+  600: "__ DECO REQ'D",
+  660: "__ DECO REQ'D",
+  720: "__ DECO REQ'D",
 };
 const noD45 = {
   11: "A",
@@ -213,7 +274,25 @@ const noD45 = {
   102: "L",
   114: "M",
   125: "N",
-  WARNING: "Decompression Required!",
+  130: "O DECO REQ'D",
+  140: "O DECO REQ'D",
+  150: "Z DECO REQ'D",
+  160: "Z DECO REQ'D",
+  170: "Z DECO REQ'D",
+  180: "Z DECO REQ'D",
+  190: "Z DECO REQ'D",
+  200: "Z DECO REQ'D",
+  210: "Z DECO REQ'D",
+  220: "Z DECO REQ'D",
+  230: "Z DECO REQ'D",
+  240: "Z DECO REQ'D",
+  270: "__ DECO REQ'D",
+  300: "__ DECO REQ'D",
+  330: "__ DECO REQ'D",
+  360: "__ DECO REQ'D",
+  420: "__ DECO REQ'D",
+  480: "__ DECO REQ'D",
+  540: "__ DECO REQ'D",
 };
 const noD50 = {
   9: "A",
@@ -229,7 +308,27 @@ const noD50 = {
   80: "K",
   89: "L",
   92: "M",
-  WARNING: "Decompression Required!",
+  95: "M DECO REQ'D",
+  100: "N DECO REQ'D",
+  110: "O DECO REQ'D",
+  120: "O DECO REQ'D",
+  130: "Z DECO REQ'D",
+  140: "Z DECO REQ'D",
+  150: "Z DECO REQ'D",
+  160: "Z DECO REQ'D",
+  170: "Z DECO REQ'D",
+  180: "Z DECO REQ'D",
+  190: "Z DECO REQ'D",
+  200: "Z DECO REQ'D",
+  210: "__ DECO REQ'D",
+  220: "__ DECO REQ'D",
+  230: "__ DECO REQ'D",
+  240: "__ DECO REQ'D",
+  270: "__ DECO REQ'D",
+  300: "__ DECO REQ'D",
+  330: "__ DECO REQ'D",
+  360: "__ DECO REQ'D",
+  420: "__ DECO REQ'D",
 };
 const noD55 = {
   8: "A",

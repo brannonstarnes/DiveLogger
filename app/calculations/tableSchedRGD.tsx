@@ -48,11 +48,7 @@ export function getSchedule(userBT: number | string, chart: object) {
   }
 }
 
-// var newDepth = getUsableDepth(userDepth) //get corrected depth
-// var table = getChart() //gets chart by using corrected depth
-// var schedule = getSchedule(userBT, newDepth) //determines which schedule to use in chart
-
-// // Repet Group Designator
+// Repet Group Designator
 export function getRGD(table: object, schedule: string | number | undefined) {
   if (schedule == undefined) {
     return 0;
