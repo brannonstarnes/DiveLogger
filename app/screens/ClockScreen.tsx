@@ -49,6 +49,7 @@ export default function ClockScreen() {
   const [onHold, setOnHold] = useState<Boolean>(false);
   const [holdStart, setHoldStart] = useState<Date>(new Date());
   const [resumedDive, setResumedDive] = useState<Date>(new Date());
+  const [totDiveTime, setTotDiveTime] = useState<Date>();
 
   useEffect(() => {
     let interval: any;
@@ -136,21 +137,31 @@ export default function ClockScreen() {
                   const stringRB = stringifyTime(RB);
                   setOnDescent(false);
                   setOnBottom(true);
-                  Alert.prompt("Reached Bottom", "Please Enter Depth:", [
-                    //This will prompt the user to enter depth before adding an entry to the log
-                    {
-                      text: "Submit",
-                      onPress: (inputDepth) => {
-                        let newEntry: LogEntry = {
-                          abbrev: "RB",
-                          eventTime: stringRB,
-                          depth: inputDepth,
-                          notes: `:${roundUpTime(descent)} descent`,
-                        };
-                        updateDiveLog(newEntry);
-                      },
-                    },
-                  ]);
+                  const rbPrompt: any = () => {
+                    Alert.prompt(
+                      "Reached Bottom",
+                      "Please Enter Depth (numbers only):",
+                      [
+                        //This will prompt the user to enter depth before adding an entry to the log
+                        {
+                          text: "Submit",
+                          onPress: (inputDepth) => {
+                            if (!isNumber(inputDepth)) {
+                              return rbPrompt();
+                            }
+                            let newEntry: LogEntry = {
+                              abbrev: "RB",
+                              eventTime: stringRB,
+                              depth: inputDepth,
+                              notes: `:${roundUpTime(descent)} descent`,
+                            };
+                            updateDiveLog(newEntry);
+                          },
+                        },
+                      ]
+                    );
+                  };
+                  rbPrompt();
                 }
                 if (onDescent == false) {
                   Alert.alert(
@@ -181,36 +192,45 @@ export default function ClockScreen() {
                   const stringLB = stringifyTime(LB);
                   const bottomTime = LB.getTime() - leftSurface.getTime();
                   const roundedBT = roundUpTime(bottomTime);
-                  Alert.prompt("Max Depth", "Please Enter Max Depth:", [
-                    {
-                      text: "Submit",
-                      onPress: (inputMaxDepth) => {
-                        if (isNumber(inputMaxDepth) == false) {
-                          Alert.alert(
-                            "Error",
-                            "Please enter numbers only for Max Depth."
-                          ); //TODO: NEED TO MAKE A PROMPT FUNCT TO CALL AGAIN IF NOT NUMBER
-                        }
-                        setDepth(inputMaxDepth);
-                        let newDepth = getUsableDepth(
-                          stringToNumber(inputMaxDepth)
-                        ); //convert the user input from string to number then find the nearest appropriate table depth from dive charts
-                        let table = getChart(newDepth);
-                        let calculatedSchedule = getSchedule(roundedBT, table); //determines which schedule to use in the table
-                        const repetGroupDesig = getRGD(
-                          table,
-                          calculatedSchedule
-                        ); //Repet Group Designator is a letter that indicates the amount of nitrogen saturation a diver has
-                        let newEntry: LogEntry = {
-                          abbrev: "LB",
-                          eventTime: stringLB,
-                          depth: inputMaxDepth,
-                          notes: `:${roundedBT} BT, T/S: ${newDepth}/${calculatedSchedule} ${repetGroupDesig}`,
-                        };
-                        updateDiveLog(newEntry);
-                      },
-                    },
-                  ]);
+
+                  const lbPrompt = () => {
+                    Alert.prompt(
+                      "Max Depth",
+                      "Please Enter Max Depth (numbers only):",
+                      [
+                        {
+                          text: "Submit",
+                          onPress: (inputMaxDepth) => {
+                            if (isNumber(inputMaxDepth) == false) {
+                              //check input for numbers only
+                              lbPrompt();
+                            }
+                            setDepth(inputMaxDepth);
+                            let newDepth = getUsableDepth(
+                              stringToNumber(inputMaxDepth)
+                            ); //convert the user input from string to number then find the nearest appropriate table depth from dive charts
+                            let table = getChart(newDepth);
+                            let calculatedSchedule = getSchedule(
+                              roundedBT,
+                              table
+                            ); //determines which schedule to use in the table
+                            const repetGroupDesig = getRGD(
+                              table,
+                              calculatedSchedule
+                            ); //Repet Group Designator is a letter that indicates the amount of nitrogen saturation a diver has
+                            let newEntry: LogEntry = {
+                              abbrev: "LB",
+                              eventTime: stringLB,
+                              depth: inputMaxDepth,
+                              notes: `:${roundedBT} BT, T/S: ${newDepth}/${calculatedSchedule} ${repetGroupDesig}`,
+                            };
+                            updateDiveLog(newEntry);
+                          },
+                        },
+                      ]
+                    );
+                  };
+                  lbPrompt();
                 }
                 if (onBottom == false) {
                   Alert.alert(
@@ -230,13 +250,16 @@ export default function ClockScreen() {
                   const RS = new Date();
                   setReachedSurface(RS);
                   const stringRS = stringifyTime(RS);
-                  const ascentInMillisec = RS.getTime() - leftBottom.getTime(); //locally scoped var - state
+                  const ascentInMillisec = RS.getTime() - leftBottom.getTime();
                   const ascent = millisToMinutesAndSeconds(ascentInMillisec);
+                  const TDT = millisToMinutesAndSeconds(
+                    RS.getTime() - leftSurface.getTime()
+                  );
                   let newEntry: LogEntry = {
                     abbrev: "RS",
                     eventTime: stringRS,
                     depth: "0",
-                    notes: `${ascent} ascent`,
+                    notes: `${ascent} ascent, TDT: ${TDT}`,
                   };
                   updateDiveLog(newEntry);
                 }
@@ -427,6 +450,8 @@ export default function ClockScreen() {
               bounces={false}
               style={styles.scrollBox}
               showsVerticalScrollIndicator={true}
+              showsHorizontalScrollIndicator={true}
+              scrollToOverflowEnabled={true}
             >
               {
                 mapEntries || "" // Will create a row for each entry object in diveLog array
@@ -512,5 +537,6 @@ const styles = StyleSheet.create({
   },
   scrollBox: {
     height: 215,
+    flexGrow: 1,
   },
 });
