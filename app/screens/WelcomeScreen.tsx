@@ -9,63 +9,82 @@ import {
   Pressable,
   Modal,
   Alert,
+  SafeAreaView,
+  ImageBackground,
 } from "react-native";
 
+const bgImage = "../assets";
 export default function WelcomeScreen({ navigation }: any) {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <View style={styles.container}>
-      <StatusBar />
-      <View style={styles.logoContainer}>
-        <Image style={styles.logo} source={require("../assets/logo.png")} />
-        <Text style={{ fontSize: 36 }}>Navy Dive Logger</Text>
-      </View>
-      <View style={styles.buttonsContainer}>
-        <View style={styles.loginButton}>
-          <Button
-            title="Log In"
-            onPress={() => setModalVisible(!modalVisible)}
-          />
-        </View>
-        <View style={styles.registerButton}>
-          <Button
-            title="Register"
-            onPress={() => console.log("Register Pressed")}
-          />
-        </View>
-      </View>
-      <View style={styles.centeredView}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>Auth0 Here</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]} //change style name
-                onPress={() => {
-                  setModalVisible(!modalVisible);
-                  navigation.navigate("Dive Logs");
-                }}
-              >
-                <Text style={styles.textStyle}>Login</Text>
-              </Pressable>
-            </View>
+    <ImageBackground
+      style={styles.background}
+      source={require("../assets/welcomeBackground.jpg")}
+    >
+      <SafeAreaView>
+        <View style={styles.container}>
+          <StatusBar />
+          <View style={styles.logoContainer}>
+            <Image
+              style={styles.logo}
+              source={require("../assets/diverSilhouette.png")}
+            />
+            <Text style={{ fontSize: 36 }}>Navy Dive Logger</Text>
           </View>
-        </Modal>
-      </View>
-    </View>
+          <View style={styles.buttonsContainer}>
+            <Pressable
+              style={styles.loginButton}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text>Log In</Text>
+            </Pressable>
+            <Pressable
+              style={styles.registerButton}
+              onPress={() => console.log("Register Pressed")}
+            >
+              <Text>Register</Text>
+            </Pressable>
+          </View>
+        </View>
+        <View style={styles.centeredView}>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>Auth0 Here</Text>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]} //change style name
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                    navigation.navigate("Dive Logs");
+                  }}
+                >
+                  <Text style={styles.textStyle}>Login</Text>
+                </Pressable>
+              </View>
+            </View>
+          </Modal>
+        </View>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    padding: 0,
+    margin: 0,
+    height: "100%",
+    width: "100%",
+  },
   button: {
     borderRadius: 20,
     padding: 10,
@@ -77,14 +96,13 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     flex: 1,
     position: "absolute",
-    bottom: 0,
+    top: 430,
   },
   buttonOpen: {
     backgroundColor: "#F194FF",
   },
   textStyle: {
     color: "white",
-    fontWeight: "bold",
     textAlign: "center",
   },
   modalText: {
@@ -103,24 +121,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  logo: {
-    height: 300,
-    width: 300,
-  },
-  logoContainer: {
-    position: "absolute",
-    top: "10%",
-    alignItems: "center",
-    fontSize: 30,
-  },
   loginButton: {
     flex: 1,
+    margin: 10,
     height: 100,
-    width: 600,
-    backgroundColor: "blue",
+    width: 300,
+    borderRadius: 50,
+    backgroundColor: "white",
     color: "white",
     alignItems: "center",
     justifyContent: "center",
+  },
+  logo: {
+    resizeMode: "center",
+    height: 300,
+    width: 500,
+    opacity: 1,
+  },
+  logoContainer: {
+    position: "absolute",
+    top: 40,
+    alignItems: "center",
+    fontSize: 30,
+    opacity: 1,
   },
   modalView: {
     margin: 20,
@@ -138,9 +161,12 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   registerButton: {
+    margin: 10,
     height: 100,
+    width: 300,
+    borderRadius: 50,
     alignSelf: "stretch",
-    backgroundColor: "purple",
+    backgroundColor: "turquoise",
     color: "white",
     alignItems: "center",
     justifyContent: "center",

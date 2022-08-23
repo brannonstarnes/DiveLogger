@@ -7,6 +7,8 @@ import {
   TextInput,
   StyleSheet,
   Alert,
+  Image,
+  ImageBackground,
 } from "react-native";
 
 import DropDownPicker from "react-native-dropdown-picker";
@@ -50,7 +52,7 @@ export default function BottleCalculatorScreen() {
   ]);
 
   var durationResults: number | undefined;
-
+  const minutes = [duration != undefined ? "minutes" : ""];
   //Checks textInputs for numbers only
   function isNumber(value: any) {
     return /^[0-9]+$/.test(value);
@@ -93,6 +95,7 @@ export default function BottleCalculatorScreen() {
         <Button
           style={{ marginRight: 10, width: 120 }}
           title="Single"
+          type={N == 1 ? "solid" : "outline"}
           onPress={() => {
             setN(1), console.log("Selected single");
           }}
@@ -100,6 +103,7 @@ export default function BottleCalculatorScreen() {
         <Button
           style={{ marginRight: 10, width: 120 }}
           title="Double"
+          type={N == 2 ? "solid" : "outline"}
           onPress={() => {
             setN(2), console.log("Selected Double");
           }}
@@ -124,6 +128,7 @@ export default function BottleCalculatorScreen() {
         <TextInput
           style={styles.bottleInput}
           placeholder="ex. 2900"
+          clearTextOnFocus={true}
           onChangeText={(userInput: SetStateAction<any>) => {
             console.log("Lowest Pressure: ", userInput);
             setPc(userInput);
@@ -134,6 +139,7 @@ export default function BottleCalculatorScreen() {
         <TextInput
           style={styles.abortInput}
           placeholder="ex. 250"
+          clearTextOnFocus={true}
           onChangeText={(userInput: SetStateAction<any>) => {
             console.log("Abort psi: ", userInput);
             setPm(userInput);
@@ -183,7 +189,13 @@ export default function BottleCalculatorScreen() {
         }}
       />
       <View style={styles.resultContainer}>
-        <Text style={styles.durationText}>{duration} minutes</Text>
+        <ImageBackground
+          style={styles.bottleImg}
+          source={require("../assets/bottleSilhouette.png")}
+        >
+          <Text style={styles.durationText}>{duration}</Text>
+          <Text style={styles.minutesText}>{minutes}</Text>
+        </ImageBackground>
       </View>
       <BottomNav />
     </SafeAreaView>
@@ -193,7 +205,7 @@ export default function BottleCalculatorScreen() {
 const styles = StyleSheet.create({
   abortInput: {
     backgroundColor: "white",
-    width: 150,
+    width: 250,
     height: 30,
   },
   abortText: {
@@ -207,13 +219,22 @@ const styles = StyleSheet.create({
     width: 400,
     justifyContent: "center",
   },
+  bottleImg: {
+    resizeMode: "stretch",
+    position: "absolute",
+    top: 10,
+    left: 10,
+    height: 500,
+    width: 214,
+    marginTop: 0,
+  },
   bottleText: {
     fontSize: 20,
   },
   bottleInput: {
     backgroundColor: "white",
     height: 30,
-    width: 150,
+    width: 250,
     marginBottom: 10,
   },
   depthContainer: {
@@ -246,10 +267,24 @@ const styles = StyleSheet.create({
     bottom: -15,
   },
   durationText: {
-    fontSize: 50,
+    fontSize: 42,
+    color: "white",
+    position: "absolute",
+    textAlign: "center",
+    width: 125,
+    left: 45,
+    top: 75,
     marginTop: 40,
   },
+  minutesText: {
+    color: "black",
+    position: "absolute",
+    top: 110,
+    left: 180,
+    fontSize: 50,
+  },
   pressureContainer: {
+    alignItems: "center",
     height: 150,
     width: 400,
     paddingHorizontal: 30,
@@ -259,6 +294,6 @@ const styles = StyleSheet.create({
     height: 292,
     width: 414,
     alignItems: "center",
-    backgroundColor: "grey",
+    backgroundColor: "turquoise",
   },
 });

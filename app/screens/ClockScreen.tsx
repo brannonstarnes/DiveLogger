@@ -5,6 +5,7 @@ import {
   View,
   ScrollView,
   Alert,
+  ImageBackground,
 } from "react-native";
 import React, { useState, useEffect, SetStateAction } from "react";
 
@@ -387,6 +388,7 @@ export default function ClockScreen() {
             />
           </View>
         </View>
+
         <View style={styles.logsContainer}>
           <DataTable>
             <DataTable.Header>
@@ -409,6 +411,9 @@ export default function ClockScreen() {
 }
 
 const styles = StyleSheet.create({
+  background: {
+    height: "100%",
+  },
   buttonGroup1: {
     width: 170,
   },
@@ -458,11 +463,6 @@ const styles = StyleSheet.create({
     width: 381,
     height: 300,
   },
-  // navButtons: {
-  //   textAlign: "center",
-  //   fontSize: 25,
-  //   color: "white",
-  // },
   o2ButtonActive: {
     title: "Off O2",
     size: "lg",
