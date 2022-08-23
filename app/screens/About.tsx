@@ -1,5 +1,13 @@
 import React from "react";
-import { View, Text, Pressable, SafeAreaView, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Image,
+  LogBox,
+} from "react-native";
 import BottomNav from "../components/BottomNav";
 
 export default function AboutScreen() {
@@ -18,6 +26,7 @@ export default function AboutScreen() {
         </Text>
 
         <Text style={styles.signature}>- ND1 (DWS) Brannon Starnes, USN</Text>
+        <Image style={styles.logo} source={require("../assets/logo.png")} />
       </View>
       <BottomNav />
     </SafeAreaView>
@@ -26,18 +35,24 @@ export default function AboutScreen() {
 
 const styles = StyleSheet.create({
   aboutText: {
-    padding: 10,
-    fontSize: 20,
+    padding: 5,
+    fontSize: 19,
     textAlign: "center",
+  },
+  logo: {
+    resizeMode: "center",
+    position: "absolute",
+    top: 40,
+    right: -190,
   },
   signature: {
     fontSize: 20,
     fontWeight: "600",
     textAlign: "center",
-    padding: 10,
+    padding: 5,
   },
   textContainer: {
-    padding: 10,
+    padding: 5,
     textAlign: "center",
     marginVertical: 30,
   },

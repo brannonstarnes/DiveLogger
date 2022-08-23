@@ -5,7 +5,6 @@ import {
   View,
   ScrollView,
   Alert,
-  ImageBackground,
 } from "react-native";
 import React, { useState, useEffect, SetStateAction } from "react";
 
@@ -14,7 +13,6 @@ import { Button } from "@rneui/themed";
 import { DataTable } from "react-native-paper";
 
 import {
-  addLeadingZerosToTimes,
   millisToMinutesAndSeconds,
   roundUpTime,
 } from "../calculations/stringifyTime";
@@ -26,8 +24,8 @@ import {
   getRGD,
   stringToNumber,
 } from "../calculations/tableSchedRGD";
-import chartMap from "../calculations/charts";
 import BottomNav from "../components/BottomNav";
+import isNumber from "../calculations/isNumber";
 
 export default function ClockScreen() {
   const [isRunning, setIsRunning] = useState(false);
@@ -160,11 +158,18 @@ export default function ClockScreen() {
                     "Divers must leave surface before reaching bottom."
                   );
                 }
+                if (onHold == true) {
+                  Alert.alert(
+                    "Error",
+                    "Divers on hold. Must Resume Dive before Reach Bottom."
+                  );
+                }
               }}
               size="lg"
               type="outline"
             />
-            {/*LEFT BOTTOM Button*/}
+            {/*LEFT BOTTOM Button
+            NOTE: Divers may need to Leave Bottom before they Reach Bottom. Max depth will still be recorded.*/}
             <Button
               title="Left Bottom"
               onPress={() => {
@@ -180,6 +185,12 @@ export default function ClockScreen() {
                     {
                       text: "Submit",
                       onPress: (inputMaxDepth) => {
+                        if (isNumber(inputMaxDepth) == false) {
+                          Alert.alert(
+                            "Error",
+                            "Please enter numbers only for Max Depth."
+                          ); //TODO: NEED TO MAKE A PROMPT FUNCT TO CALL AGAIN IF NOT NUMBER
+                        }
                         setDepth(inputMaxDepth);
                         let newDepth = getUsableDepth(
                           stringToNumber(inputMaxDepth)
@@ -373,6 +384,7 @@ export default function ClockScreen() {
               onPress={() => {
                 setIsRunning(false);
                 console.log("Clock Stopped");
+                console.log("Dive Log: ", JSON.stringify(diveLog));
               }}
             />
             {/*RESET Button*/}
@@ -397,7 +409,11 @@ export default function ClockScreen() {
               <DataTable.Title style={{ flex: 0.7 }}>Depth</DataTable.Title>
               <DataTable.Title style={{ flex: 2 }}>Notes</DataTable.Title>
             </DataTable.Header>
-            <ScrollView bounces={false} style={styles.scrollBox}>
+            <ScrollView
+              bounces={false}
+              style={styles.scrollBox}
+              showsVerticalScrollIndicator={true}
+            >
               {
                 mapEntries || "" // Will create a row for each entry object in diveLog array
               }
@@ -405,7 +421,7 @@ export default function ClockScreen() {
           </DataTable>
         </View>
       </View>
-      <BottomNav />
+      <BottomNav diveLog={diveLog} />
     </SafeAreaView>
   );
 }
